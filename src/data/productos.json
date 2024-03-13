@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "nombre": "Pizza",
+    "descripcion": "2x1 Todos los Lunes y Martes",
+    "precio": 250,
+    "thumbnail": "thumbnail1.jpg",
+    "code": "code1",
+    "stock": 120
+  },
+  {
+    "id": 2,
+    "nombre": "Rolls",
+    "descripcion": "3x2 Todos los Miercoles y Jueves",
+    "precio": 100,
+    "thumbnail": "thumbnail2.jpg",
+    "code": "code2",
+    "stock": 200
+  },
+  {
+    "id": 3,
+    "nombre": "Descuentos",
+    "descripcion": "2x1 Todos los Lunes y Martes",
+    "precio": 200,
+    "thumbnail": "thumbnail1.jpg",
+    "code": "code1",
+    "stock": 100
+  },
+  {
+    "id": 4,
+    "nombre": "Descuentos",
+    "descripcion": "2x1 Todos los Lunes y Martes",
+    "precio": 200,
+    "thumbnail": "thumbnail1.jpg",
+    "code": "code1",
+    "stock": 100
+  }
+]
