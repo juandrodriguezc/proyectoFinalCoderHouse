@@ -5,7 +5,7 @@ import { Server } from 'socket.io'
 import handlebars from "express-handlebars"
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/cartsRouter.js'
-import listadoRouter from './routes/listado.Router.js'
+import listadoRouter from './routes/listadoRouter.js'
 const PORT=3000;
 
 let serverSocket;

@@ -3,14 +3,14 @@ import path from 'path';
 import { rutaProductos } from '../utils.js';
     
 export class ProductManager {
-    constructor(rutaProductos) {
-        this.rutaProductos = rutaProductos;
+    constructor(ruta) {
+        this.path = ruta;
         this.products= this.loadProductsFromFile(); // Cargar productos desde el archivo al instanciar ProductManager
     }
 
     loadProductsFromFile() {
         try {
-            const data = fs.readFileSync(this.rutaProductos, 'utf8');
+            const data = fs.readFileSync(this.path, 'utf8');
             console.log('Productos cargados correctamente desde el archivo.');
             return JSON.parse(data);
         } catch (err) {
@@ -61,7 +61,7 @@ return id;
 }
 
 saveProducts(){
-    fs.writeFileSync(this.rutaProductos, JSON.stringify(this.products, null, 2));
+    fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2));
 }
 
 //Actualizar el producto
@@ -98,12 +98,6 @@ deleteProduct(id) {
 //Creando los productos
 const manager = new ProductManager(rutaProductos);
 
-// manager.addProduct('Pizza', '2x1 Todos los Lunes y Martes', 200, 'thumbnail1.jpg', 'code1', 100);
-// manager.addProduct('Rolls', '3x2 Todos los Miercoles y Jueves', 100, 'thumbnail2.jpg', 'code2', 200 );
-
-// manager.addProduct('Descuentos', '2x1 Todos los Lunes y Martes', 200, 'thumbnail1.jpg', 'code1', 100);
-
-
 const products = manager.getProduct();
 console.log('Lista de productos:', products);
 
@@ -119,12 +113,5 @@ stock: 120
 };
 
 manager.updateProduct(idProductoActualizar, nuevosDatos);
-
-// setTimeout(() =>{
-// const productoEliminado = 4; // Id del producto que se desea eliminar
-// manager.deleteProduct(productoEliminado);
-
-// console.log('Lista de productos actualizada:', manager.getProduct());
-// },3000)
 
 export default ProductManager;

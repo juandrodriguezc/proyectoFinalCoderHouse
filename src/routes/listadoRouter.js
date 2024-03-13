@@ -12,10 +12,10 @@ router.get('/',(req,res)=>{
     res.status(200).render('inicio', {nombre})
 })
 
-router.get('/productos,', (req, res)=>{
+router.get('/productos', (req, res)=>{
     let productos=productsManager.getProduct()
 
-    res.status(200).render('lista de productos')
+    res.status(200).render('productos', {productos})
 
 })
 
