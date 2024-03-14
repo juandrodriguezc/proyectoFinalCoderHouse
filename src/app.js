@@ -6,25 +6,33 @@ import handlebars from "express-handlebars"
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/cartsRouter.js'
 import listadoRouter from './routes/listadoRouter.js'
-const PORT=3000;
 
-let serverSocket;
+const PORT=3000;
+let io;
 const app=express();
 
-app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname, "public")))
 
 app.engine("handlebars", handlebars.engine())
 app.set("view engine", "handlebars")
 app.set("views", path.join(__dirname, "views"))
 
-app.use("/api/products", productsRouter);
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+app.use(express.static(path.join(__dirname, "public")))
+
+app.use("/api/products", (req, res, next)=>{
+    req.io=io
+    next()}, productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/', listadoRouter )
 
-const server=app.listen(PORT,()=>{
+const server=app.listen(PORT,()=>{//Server de Http
     console.log(`Server escuchando en puerto ${PORT}`);
 });
 
-serverSocket=new Server(server)
+io=new Server(server)//Server de WebSocket
+
+io.on('connection', socket=>{
+    console.log(`Se ha conectado un usuario con id ${socket.id}`)
+})

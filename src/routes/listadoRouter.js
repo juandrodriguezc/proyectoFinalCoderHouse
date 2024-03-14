@@ -12,10 +12,16 @@ router.get('/',(req,res)=>{
     res.status(200).render('inicio', {nombre})
 })
 
-router.get('/productos', (req, res)=>{
-    let productos=productsManager.getProduct()
+router.get('/productos', async (req, res)=>{
+    let productos= await productsManager.getProduct()
 
     res.status(200).render('productos', {productos})
+
+})
+
+router.get('/realtimesproduct', async(req, res)=>{
+    let productosTime= await productsManager.getProduct()
+    res.status(200).render('realTimesProducts', {productosTime})
 
 })
 

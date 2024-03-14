@@ -1,117 +1,83 @@
 import fs from 'fs';
-import path from 'path';
 import { rutaProductos } from '../utils.js';
-    
+
 export class ProductManager {
     constructor(ruta) {
         this.path = ruta;
-        this.products= this.loadProductsFromFile(); // Cargar productos desde el archivo al instanciar ProductManager
     }
 
-    loadProductsFromFile() {
+    async getProduct() {
         try {
-            const data = fs.readFileSync(this.path, 'utf8');
-            console.log('Productos cargados correctamente desde el archivo.');
+            const data = await fs.promises.readFile(this.path, { encoding: "utf-8" });
             return JSON.parse(data);
-        } catch (err) {
-            console.error('Error al cargar productos desde el archivo:', err);
+        } catch (error) {
+            console.error("Error al obtener productos:", error);
             return [];
         }
     }
 
-
-getProduct() {
-    return this.products;
-}
-
-addProduct(nombre, descripcion, precio = 0, thumbnail, code, stock = 0) {
-    if (!nombre || !descripcion || precio===undefined || !thumbnail || !code || stock===undefined) {
-        console.log(" Por favor complete todos los datos");
-        return; 
+    async create(productoNuevo) {
+        try {
+            let productos = await this.getProduct();
+            const id = this.idUnico(productos);
+            const nuevoProducto = { id, ...productoNuevo }; // Combinar solo con los datos del nuevo producto
+            productos.push(nuevoProducto);
+            await fs.promises.writeFile(this.path, JSON.stringify(productos, null, 5));
+            return nuevoProducto;
+        } catch (error) {
+            console.error("Error al crear el producto:", error);
+            throw error; // Lanzar la excepción nuevamente para que el llamador pueda manejarla
+        }
     }
-    
-    const id = this.idUnico();
-    //Variable para agregar los productos
-    const newProduct = {id, nombre, descripcion, precio, thumbnail, code, stock};
-    this.products.push(newProduct);
-    this.saveProducts();
-    console.log('Producto agregado:', newProduct);
 
-    return newProduct;
-    
-}
-getProductById(id) {
-    const product = this.products.find(product => product.id === id);
-    if (product) {
-        return product;
-    } else {
-        console.log("Error: Producto no encontrado");
-        return null;
+    idUnico(productos) {
+        let id = 1;
+        if (productos.length > 0) {
+            id = productos[productos.length - 1].id + 1;
+        }
+        return id;
     }
-}
 
-idUnico(){
-//Para agregar el ID que se autoincremente
-let id = 1; 
-    
-if (this.products.length > 0) {
-    id = this.products[this.products.length - 1].id + 1;
-}
-return id;
-}
-
-saveProducts(){
-    fs.writeFileSync(this.path, JSON.stringify(this.products, null, 2));
-}
-
-//Actualizar el producto
-updateProduct(id, NuevaInfo) {
-    const index = this.products.findIndex(product => product.id === id);
-    if (index !== -1) {
-        
-        const updatedProduct = { ...this.products[index], ...NuevaInfo };
-        
-        updatedProduct.id = id;
-        
-        this.products[index] = updatedProduct;
-        console.log("Producto actualizado correctamente");
-        // this.saveProducts();
-        return true;
-    } else {
-        console.log("No se pudo actualizar, ya que el producto no se encontró");
-        return false;
+    async saveProducts(products) {
+        try {
+            await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
+            console.log("Productos guardados correctamente");
+        } catch (error) {
+            console.error("Error al guardar los productos:", error);
+        }
     }
-}
 
-//Para eliminar un producto
-deleteProduct(id) {
-    const initialLength = this.products.length;
-    this.products = this.products.filter(product => product.id !== id);
-    if (this.products.length === initialLength) {
-        console.log("Error: Producto no encontrado");
-    } else {
-        console.log("Producto eliminado correctamente");
-        this.saveProducts();
+    async deleteProduct(id) {
+        try {
+            let productos = await this.getProduct();
+            const initialLength = productos.length;
+            productos = productos.filter(producto => producto.id !== id);
+            if (productos.length === initialLength) {
+                console.log("Error: Producto no encontrado");
+            } else {
+                await this.saveProducts(productos);
+                console.log("Producto eliminado correctamente");
+            }
+        } catch (error) {
+            console.error("Error al eliminar el producto:", error);
+        }
+    }
+
+    async updateProduct(id, nuevosDatos) {
+        try {
+            let productos = await this.getProduct();
+            const index = productos.findIndex(producto => producto.id === id);
+            if (index !== -1) {
+                productos[index] = { ...productos[index], ...nuevosDatos };
+                await this.saveProducts(productos);
+                console.log("Producto actualizado correctamente");
+            } else {
+                console.log("Error: Producto no encontrado");
+            }
+        } catch (error) {
+            console.error("Error al actualizar el producto:", error);
+        }
     }
 }
-}
-//Creando los productos
-const manager = new ProductManager(rutaProductos);
-
-const products = manager.getProduct();
-console.log('Lista de productos:', products);
-
-const productoEncontrado = manager.getProductById(1);{
-console.log('Producto encontrado:', productoEncontrado);
-}
-
-// Actualizar un producto existente
-const idProductoActualizar = 1;
-const nuevosDatos = {
-precio: 250,
-stock: 120 
-};
-
-manager.updateProduct(idProductoActualizar, nuevosDatos);
 
 export default ProductManager;
