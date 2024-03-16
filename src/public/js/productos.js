@@ -1,3 +1,4 @@
+//Función para pasar los productos creados del PostMan al servidor directos con Websocket
 const socket=io()
 
 socket.on("nuevoProducto", datos=>{

@@ -20,7 +20,7 @@ app.use(express.urlencoded({extended:true}));
 
 app.use(express.static(path.join(__dirname, "public")))
 
-app.use("/api/products", (req, res, next)=>{
+app.use("/api/productos", (req, res, next)=>{
     req.io=io
     next()}, productsRouter);
 

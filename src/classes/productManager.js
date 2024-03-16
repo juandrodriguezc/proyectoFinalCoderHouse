@@ -5,7 +5,7 @@ export class ProductManager {
         this.rutaProductos = rutaProductos;
         this.products=[]
     }
-
+    //función para obtener los productos ya creados
     async getProduct() {
         try {
             const data = await fs.promises.readFile(this.rutaProductos, { encoding: "utf-8" });
@@ -15,7 +15,7 @@ export class ProductManager {
             return [];
         }
     }
-
+    //función para IdUnico
     async idUnico(productos) {
         let id = 1;
         if (productos.length > 0) {
@@ -24,17 +24,18 @@ export class ProductManager {
         return id;
     }
 
+    //Función para crear nuevo producto
     async addProduct(nombre, precio) {
-        const productos = await this.getProduct(); // Obtener los productos existentes
-        const id = await this.idUnico(productos); // Obtener un ID único para el nuevo producto
-        const newProduct = { id, nombre, precio }; // Crear el nuevo producto con el nombre y el ID
-        productos.push(newProduct); // Agregar el nuevo producto a la lista existente de productos
-        await this.saveProducts(productos); // Guardar la lista actualizada de productos
+        const productos = await this.getProduct();
+        const id = await this.idUnico(productos); 
+        const newProduct = { id, nombre, precio }; 
+        productos.push(newProduct); // 
+        await this.saveProducts(productos);
         console.log('Producto agregado:', newProduct);
         return newProduct;
     }
 
-
+//Función para guardar los productos
 async saveProducts(products) {
     try {
         if (products) {
@@ -47,7 +48,7 @@ async saveProducts(products) {
         console.error("Error al guardar los productos:", error);
     }
 }
-
+//Función para eliminar productos, pero que en este desafio no lo utilicé
     // async deleteProduct(id) {
     //     try {
     //         let productos = await this.getProduct();
