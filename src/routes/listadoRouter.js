@@ -19,10 +19,5 @@ router.get('/productos', async (req, res)=>{
 
 })
 
-router.get('/realtimesproduct', async(req, res)=>{
-    let productosTime= await productsManager.getProduct()
-    res.status(200).render('realTimesProducts', {productosTime})
-
-})
 
 export default router;
