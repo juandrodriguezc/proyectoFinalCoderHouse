@@ -4,7 +4,6 @@ import path from "path";
 import { Server } from 'socket.io'
 import handlebars from "express-handlebars"
 import productsRouter from './routes/productsRouter.js';
-import cartsRouter from './routes/cartsRouter.js'
 import listadoRouter from './routes/listadoRouter.js'
 
 const PORT=3000;
@@ -24,7 +23,7 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use("/api/products", (req, res, next)=>{
     req.io=io
     next()}, productsRouter);
-app.use("/api/carts", cartsRouter);
+
 app.use('/', listadoRouter )
 
 const server=app.listen(PORT,()=>{//Server de Http

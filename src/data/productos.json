@@ -27,13 +27,13 @@
     "stock": 100
   },
   {
-  "id": 5,
-  "nombre": "Pollo al Spiedo",
-  "descripcion": "El mejor de Montevideo",
-  "precio": 200,
-  "thumbnail": "thumbnail4.jpg",
-  "code": "code4",
-  "stock": 100
+    "id": 5,
+    "nombre": "Pollo al Spiedo",
+    "descripcion": "El mejor de Montevideo",
+    "precio": 200,
+    "thumbnail": "thumbnail4.jpg",
+    "code": "code4",
+    "stock": 100
   },
   {
     "id": 5,
@@ -43,16 +43,16 @@
     "thumbnail": "thumbnail5.jpg",
     "code": "code5",
     "stock": 100
-    },
-    {
-      "id": 6,
-      "nombre": "Pollo Frito",
-      "descripcion": "2x1 Todos los Miercoles y Jueves",
-      "precio": 300,
-      "thumbnail": "thumbnail6.jpg",
-      "code": "code6",
-      "stock": 100
-      },
+  },
+  {
+    "id": 6,
+    "nombre": "Pollo Frito",
+    "descripcion": "2x1 Todos los Miercoles y Jueves",
+    "precio": 300,
+    "thumbnail": "thumbnail6.jpg",
+    "code": "code6",
+    "stock": 100
+  },
   {
     "id": 7,
     "nombre": "Tortas",
@@ -70,5 +70,10 @@
     "thumbnail": "thumbnail8.jpg",
     "code": "code8",
     "stock": 100
+  },
+  {
+    "id": 9,
+    "nombre": "Ñoquis",
+    "precio": "150"
   }
 ]

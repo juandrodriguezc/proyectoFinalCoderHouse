@@ -8,13 +8,14 @@ let productManager=new ProductManager(rutaProductos)
 
 router.post('/',async(req,res)=>{
 
-    let {nombre}=req.body
-    if(!nombre){
+    const {nombre, precio}=req.body
+    console.log('Nombre del producto recibido:', nombre)
+    if(!nombre || !precio){
         res.setHeader('Content-Type','application/json');
-        return res.status(400).json({error:`Complete el nombre del producto`})
+        return res.status(400).json({error:`Complete los datos del producto`})
     }
 
-    let nuevoProducto=await productManager.create({nombre})   
+    let nuevoProducto=await productManager.addProduct(nombre, precio);   
     if(!nuevoProducto){
         res.setHeader('Content-Type','application/json');
         return res.status(500).json({error:`Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`})
