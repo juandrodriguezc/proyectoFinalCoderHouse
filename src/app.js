@@ -35,3 +35,14 @@ io=new Server(server)//Server de WebSocket
 io.on('connection', socket=>{
     console.log(`Se ha conectado un usuario con id ${socket.id}`)
 })
+
+const connect=async()=>{
+    try {
+        // await mongoose.connect("mongodb+srv://backend53110:CoderCoder@cluster0.tkdyfo3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&dbName=clase14")
+        await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"clase14"})
+        console.log("DB Online...!!!")
+    } catch (error) {
+        console.log("Fallo conexión. Detalle:", error.message)
+    }
+}
+connect()
