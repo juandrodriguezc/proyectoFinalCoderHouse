@@ -1,13 +1,8 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose';
 
-const carritosColl="mascotas"
-const carritosEsquema=new mongoose.Schema(
-    {
-        nombre: {type:String, required:true}
-    },
-    {
-        timestamps:true
-    }
-)
+const carritoSchema = new mongoose.Schema({
+    id: Number,
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Producto' }]
+});
 
-export const carritosModelo=mongoose.model(carritosColl, carritosEsquema)
+export const modeloCarrito = mongoose.model('Carrito', carritoSchema);

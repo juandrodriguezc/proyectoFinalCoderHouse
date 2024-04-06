@@ -5,6 +5,7 @@ import { Server } from 'socket.io'
 import handlebars from "express-handlebars"
 import productsRouter from './routes/productsRouter.js';
 import listadoRouter from './routes/listadoRouter.js'
+import mongoose from 'mongoose';
 
 const PORT=3000;
 let io;
