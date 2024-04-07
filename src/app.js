@@ -6,6 +6,7 @@ import handlebars from "express-handlebars"
 import productsRouter from './routes/productsRouter.js';
 import listadoRouter from './routes/listadoRouter.js'
 import mongoose from 'mongoose';
+import cartsRouter from './routes/cartsRouter.js';
 
 const PORT=3000;
 let io;
@@ -24,7 +25,9 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use("/api/productos", (req, res, next)=>{
     req.io=io
     next()}, productsRouter);
-
+app.use("/api/carts",
+(req, res, next)=>{req.io=io
+next()}, cartsRouter);
 app.use('/', listadoRouter )
 
 const server=app.listen(PORT,()=>{//Server de Http
@@ -39,7 +42,6 @@ io.on('connection', socket=>{
 
 const connect=async()=>{
     try {
-        // await mongoose.connect("mongodb+srv://backend53110:CoderCoder@cluster0.tkdyfo3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&dbName=clase14")
         await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"clase14"})
         console.log("DB Online...!!!")
     } catch (error) {
