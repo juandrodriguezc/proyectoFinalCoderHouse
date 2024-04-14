@@ -1,7 +1,7 @@
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';
 
 class CartManager {
-    constructor(rutaCarrito) {
+    constructor() {
     }
 
     // Crear un nuevo carrito

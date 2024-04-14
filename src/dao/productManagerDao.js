@@ -7,18 +7,24 @@ export class ProductManager {
     // Función para obtener todos los productos
     async getProduct() {
         try {
-            const productos = await modeloProductos.find();
+            const productos = await modeloProductos.find().lean();
             return productos;
         } catch (error) {
             console.error("Error al obtener productos:", error);
             return [];
         }
     }
+
+    async getProductById(id){
+        // return this.usuarios
+        // return await modeloUsuarios.findOne({id})
+        return await modeloProductos.findById(id).lean()
+    }
     
     // Función para crear un nuevo producto
     async addProduct(nombre, precio) {
         try {
-            const newProduct = await modeloProductos.create({ nombre, precio });
+            const newProduct = await modeloProductos.create({ nombre, precio }).lean();
             console.log('Producto agregado:', newProduct);
             return newProduct;
         } catch (error) {
@@ -27,10 +33,14 @@ export class ProductManager {
         }
     }
 
+    //funcion para modificar producto
+    async update(id, modificacion={}){
+        return await modeloUsuarios.updateOne({_id:id}, modificacion)
+    }
     // Función para eliminar un producto
     async deleteProduct(id) {
         try {
-            const deletedProduct = await modeloProductos.findByIdAndDelete(id);
+            const deletedProduct = await modeloProductos.findByIdAndDelete(id).lean();
             if (deletedProduct) {
                 console.log("Producto eliminado correctamente");
             } else {

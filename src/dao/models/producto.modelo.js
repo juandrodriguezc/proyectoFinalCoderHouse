@@ -1,14 +1,11 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import paginate from "mongoose-paginate-v2";
 
-const productosColl="productos"
-const productosSchema=new mongoose.Schema(
-    {
-        nombre: {type:String, required:true},
-        precio: {type:Number, required:true},
-    },
-    {
-        timestamps: true, strict:false
-    }
-)
+const productosSchema = new mongoose.Schema({
+    name: String,
+    precio: Number
+});
 
-export const modeloProductos=mongoose.model(productosColl, productosSchema)
+productosSchema.plugin(paginate);
+
+export const modeloProductos = mongoose.model('productos', productosSchema);

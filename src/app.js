@@ -8,6 +8,7 @@ import listadoRouter from './routes/listadoRouter.js'
 import mongoose from 'mongoose';
 import cartsRouter from './routes/cartsRouter.js';
 
+
 const PORT=3000;
 let io;
 const app=express();
@@ -20,7 +21,7 @@ app.set("views", path.join(__dirname, "views"))
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "./public")))
 
 app.use("/api/productos", (req, res, next)=>{
     req.io=io
@@ -42,7 +43,7 @@ io.on('connection', socket=>{
 
 const connect=async()=>{
     try {
-        await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"clase14"})
+        await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"Ecommerce"})
         console.log("DB Online...!!!")
     } catch (error) {
         console.log("Fallo conexión. Detalle:", error.message)

@@ -1,4 +1,4 @@
-db.products.insertMany([
+db.productos.insertMany([
     {
       "id": 1,
       "nombre": "Pizza",
@@ -82,3 +82,17 @@ db.products.insertMany([
       "precio": "400"
     }
   ])
+
+
+  //carts
+
+  db.carritos.insertMany([
+    {
+    "id": 1,
+    "products": []
+    },
+    {
+    "id": 2,
+    "products": []
+    }
+])
