@@ -5,7 +5,7 @@
 
 <ul id="productos">
     {{#each productos}}
-    <li>{{nombre}} - {{precio}}$</li>
+    <li>{{nombre}} - {{precio}}$ <button class="agregar-carrito" data-id="{{_id}}">Agregar al carrito</button></li>
     {{/each}}
 </ul>
 
@@ -34,6 +34,33 @@
         window.location.href="/productos?pagina="+inputPagina.value
     })
 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const botonesAgregarCarrito = document.querySelectorAll('.agregar-carrito');
+        botonesAgregarCarrito.forEach(boton => {
+            boton.addEventListener('click', async () => {
+                const productoId = boton.getAttribute('data-id');
+                try {
+                    const respuesta = await fetch(`/api/carts/${productoId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (respuesta.ok) {
+                        alert('Producto agregado al carrito correctamente');
+                    } else {
+                        throw new Error('Error al agregar el producto al carrito');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al agregar el producto al carrito');
+                }
+            });
+        });
+    });
 </script>
 
 <script src="socket.io/socket.io.js"></script>

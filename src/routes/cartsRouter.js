@@ -1,48 +1,68 @@
 import { Router } from "express";
-import CartManager from "../dao/cartManagerDao.js";
-import { rutaCarrito } from "../utils.js";
+import { modeloCarrito } from "../dao/models/carrito.modelo.js";
+import { modeloProductos } from "../dao/models/producto.modelo.js";
 
-export const cartsRouter = (productManager) => {
+export const cartsRouter = () => {
     const router = Router();
-    const cartManager = new CartManager(rutaCarrito);
 
+    // Obtener todos los carritos
     router.get('/', async (req, res) => {
-        const carts = await cartManager.getCarts();
-        res.status(200).json(carts);
-    });
-
-    router.get('/:id', async (req, res) => { // Aquí la función debe ser async
-        const cartId = parseInt(req.params.id);
-        const cart = await cartManager.getCartById(cartId); // Esperar la función
-        if (cart) {
-            res.json(cart);
-        } else {
-            res.status(404).send('Error 404. Carrito no encontrado');
+        try {
+            const carts = await modeloCarrito.find().lean();
+            res.status(200).render('carts', {carts});
+        } catch (error) {
+            console.error('Error al obtener los carritos:', error);
+            res.status(500).send('Error al obtener los carritos');
         }
     });
 
-    router.post('/', async (req, res) => {
-        const newCart = await cartManager.createCart()
-        res.status(201).json(newCart);
-    });
-
-    router.post('/:id/products/:productId', async (req, res) => {
-        const cartId = parseInt(req.params.id);
-        const productId = req.params.productId;
-
-        const productToAdd = await productManager.getProductById(productId);
-
-        if (productToAdd) {
-            await cartManager.addProductToCart(cartId, productToAdd); // Esperar la función
-            const cart = await cartManager.getCartById(cartId); // Esperar la función
-
+    // Obtener un carrito por su ID
+    router.get('/:id', async (req, res) => {
+        const cartId = req.params.id;
+        try {
+            const cart = await modeloCarrito.findById(cartId);
             if (cart) {
-                res.status(200).json(cart);
+                res.json(cart);
             } else {
                 res.status(404).send('Error 404. Carrito no encontrado');
             }
-        } else {
-            res.status(404).send('Error 404. Producto no encontrado');
+        } catch (error) {
+            console.error('Error al obtener el carrito por ID:', error);
+            res.status(500).send('Error al obtener el carrito por ID');
+        }
+    });
+
+    // Crear un nuevo carrito
+    router.post('/', async (req, res) => {
+        try {
+            const newCart = await modeloCarrito.create({});
+            res.status(201).json(newCart);
+        } catch (error) {
+            console.error('Error al crear un nuevo carrito:', error);
+            res.status(500).send('Error al crear un nuevo carrito');
+        }
+    });
+
+    // Agregar un producto a un carrito
+    router.post('/:id/products/:productId', async (req, res) => {
+        const { id: cartId, productId } = req.params;
+        try {
+            const productToAdd = await modeloProductos.findById(productId);
+            if (productToAdd) {
+                const cart = await modeloCarrito.findById(cartId);
+                if (cart) {
+                    cart.products.push(productToAdd);
+                    await cart.save();
+                    res.status(200).json(cart);
+                } else {
+                    res.status(404).send('Error 404. Carrito no encontrado');
+                }
+            } else {
+                res.status(404).send('Error 404. Producto no encontrado');
+            }
+        } catch (error) {
+            console.error('Error al agregar un producto al carrito:', error);
+            res.status(500).send('Error al agregar un producto al carrito');
         }
     });
 

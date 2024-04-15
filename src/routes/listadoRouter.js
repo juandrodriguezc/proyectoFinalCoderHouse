@@ -2,6 +2,8 @@ import { Router } from 'express';
 import ProductManager from '../dao/productManagerDao.js';
 import { rutaProductos } from '../utils.js';
 import { modeloProductos } from '../dao/models/producto.modelo.js';
+import { modeloCarrito } from '../dao/models/carrito.modelo.js';
+
 
 
 export const router=Router()
@@ -38,5 +40,14 @@ router.get('/productos',async(req,res)=>{
     })
 })
 
+router.get('/carts', async (req, res) => {
+    try {
+        const carts = await modeloCarrito.find();
+        res.status(200).render('carts',{carts});
+    } catch (error) {
+        console.error('Error al obtener los carritos:', error);
+        res.status(500).send('Error al obtener los carritos');
+    }
+});
 
 export default router;
