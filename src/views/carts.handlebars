@@ -1,13 +1,14 @@
 <h1>Carrito de Compras</h1>
 <hr>
 
-<h2>Productos en el Carrito:</h2>
-
-<ul id="productos-carrito">
-    {{#each productosEnCarrito}}
-    <li>{{nombre}} - {{precio}}$ - Cantidad: {{cantidad}} <button class="eliminar-producto" data-id="{{_id}}">Eliminar</button></li>
+{{#each carts}}
+<h2>Carrito {{ this._id }}</h2>
+<ul>
+    {{#each this.products}}
+    <li>{{ this.nombre }} - {{ this.precio }}$ - Cantidad: {{ this.cantidad }}</li>
     {{/each}}
 </ul>
+{{/each}}
 
 <a href="/">Seguir Comprando</a>
 

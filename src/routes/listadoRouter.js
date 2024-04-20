@@ -3,6 +3,7 @@ import ProductManager from '../dao/productManagerDao.js';
 import { rutaProductos } from '../utils.js';
 import { modeloProductos } from '../dao/models/producto.modelo.js';
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';
+import { auth } from '../middlewares/auth.js';
 
 
 
@@ -49,5 +50,24 @@ router.get('/carts', async (req, res) => {
         res.status(500).send('Error al obtener los carritos');
     }
 });
+
+router.get('/registro',(req,res)=>{
+
+    let {error, mensaje} = req.query
+
+    res.status(200).render('registro', {error, mensaje})
+})
+
+router.get('/login',(req,res)=>{
+
+    res.status(200).render('login')
+})
+
+router.get('/perfil', auth, (req,res)=>{
+
+    let usuario=req.session.usuario
+
+    res.status(200).render('perfil', {usuario})
+})
 
 export default router;

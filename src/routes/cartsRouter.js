@@ -2,8 +2,7 @@ import { Router } from "express";
 import { modeloCarrito } from "../dao/models/carrito.modelo.js";
 import { modeloProductos } from "../dao/models/producto.modelo.js";
 
-export const cartsRouter = () => {
-    const router = Router();
+    export const router = Router();
 
     // Obtener todos los carritos
     router.get('/', async (req, res) => {
@@ -65,8 +64,3 @@ export const cartsRouter = () => {
             res.status(500).send('Error al agregar un producto al carrito');
         }
     });
-
-    return router;
-}
-
-export default cartsRouter;

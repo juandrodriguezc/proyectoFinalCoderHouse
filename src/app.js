@@ -1,12 +1,14 @@
 import express from 'express';
+import session from 'express-session';
 import __dirname from "./utils.js"
 import path from "path";
 import { Server } from 'socket.io'
 import handlebars from "express-handlebars"
-import productsRouter from './routes/productsRouter.js';
-import listadoRouter from './routes/listadoRouter.js'
+import {router as productsRouter} from './routes/productsRouter.js';
+import {router as listadoRouter} from './routes/listadoRouter.js';
 import mongoose from 'mongoose';
-import cartsRouter from './routes/cartsRouter.js';
+import {router as cartsRouter} from './routes/cartsRouter.js';
+import {router as sessionRouter} from './routes/sessionRouter.js';
 
 
 const PORT=3000;
@@ -20,6 +22,13 @@ app.set("views", path.join(__dirname, "views"))
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(session(
+    {
+    secret:"coderhouse",
+    resave:true,
+    saveUninitialized:true
+    }
+))
 
 app.use(express.static(path.join(__dirname, "./public")))
 
@@ -30,6 +39,7 @@ app.use("/api/carts",
 (req, res, next)=>{req.io=io
 next()}, cartsRouter);
 app.use('/', listadoRouter )
+app.use('/api/sessions', sessionRouter)
 
 const server=app.listen(PORT,()=>{//Server de Http
     console.log(`Server escuchando en puerto ${PORT}`);
