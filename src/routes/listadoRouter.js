@@ -22,7 +22,11 @@ router.get('/productos',async(req,res)=>{
     if(!pagina){
         pagina=1
     }
-
+    if (!req.session.usuario) {
+        // Si el usuario no está autenticado, redirigirlo al inicio de sesión
+        return res.redirect('/login');
+    }
+    const nombreUsuario= req.session.usuario.nombre
     let {
         docs:productos,
         totalPages, 
@@ -34,6 +38,7 @@ router.get('/productos',async(req,res)=>{
 
     res.setHeader('Content-Type','text/html')
     res.status(200).render("productos",{
+        nombreUsuario,
         productos,
         totalPages, 
         prevPage, nextPage, 

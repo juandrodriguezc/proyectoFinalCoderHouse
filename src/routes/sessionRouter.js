@@ -56,34 +56,32 @@ router.post('/login',async(req,res)=>{
 
     usuario={...usuario}
     delete usuario.password
-    req.session.usuario=usuario // en un punto de mi proyecto
+    req.session.usuario=usuario
 
+    if (usuario.email === 'adminCoder@coder.com') {
+        // Asignar el rol de administrador al usuario
+        usuario.rol = 'admin';
+    }
+   
     res.setHeader('Content-Type','application/json')
-    res.status(200).json({
-        message:"Login correcto", usuario
-    })
+    res.redirect('/productos')
+//     res.status(200).json({
+//         message:"Login correcto", usuario
+//     })
 })
 
 
-router.get('/logout',(req,res)=>{
-
-    req.session.destroy(e=>{
-        if(e){
-            res.setHeader('Content-Type','application/json');
-            return res.status(500).json(
-                {
-                    error:`Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
-                    detalle:`${e.message}`
-                }
-            )
-            
+router.get('/logout', (req, res) => {
+    req.session.destroy(e => {
+        if (e) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(500).json({
+                error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+                detalle: `${e.message}`
+            });
+        } else {
+            // Redirigir al usuario al inicio de sesión después del cierre de sesión
+            res.redirect('/login');
         }
-    })
-    
-    res.setHeader('Content-Type','application/json');
-    res.status(200).json({
-        message:"Logout exitoso"
     });
 });
-
-export default router;

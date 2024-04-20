@@ -1,7 +1,7 @@
 <h1>Pagina de Productos</h1>
 <hr>
 
-<h2>Listado de Productos:</h2>
+<h2>Bienvenido {{nombreUsuario}}, Acá está nuestro listado de Productos:</h2>
 
 <ul id="productos">
     {{#each productos}}
@@ -9,7 +9,12 @@
     {{/each}}
 </ul>
 
-<a href="/">Pagina de Inicio</a>
+<li>
+    <a href="/">Pagina de Inicio</a>
+</li>
+<li>
+    <a href="/api/sessions/logout">Cerrar sesion</a>
+</li>
 
 <a href="/productos?pagina=1">Pag.1</a>
 
