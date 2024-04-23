@@ -9,6 +9,8 @@ import {router as listadoRouter} from './routes/listadoRouter.js';
 import mongoose from 'mongoose';
 import {router as cartsRouter} from './routes/cartsRouter.js';
 import {router as sessionRouter} from './routes/sessionRouter.js';
+import passport from 'passport';
+import { initPassport } from './config/passport.config.js';
 
 
 const PORT=3000;
@@ -26,9 +28,13 @@ app.use(session(
     {
     secret:"coderhouse",
     resave:true,
-    saveUninitialized:true
-    }
-))
+    saveUninitialized:true,
+    })
+
+)
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(express.static(path.join(__dirname, "./public")))
 
