@@ -1,6 +1,6 @@
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';
 
-class CartManager {
+export class CartManager {
     constructor() {
     }
 
@@ -57,4 +57,3 @@ class CartManager {
     }
 }
 
-export default CartManager;

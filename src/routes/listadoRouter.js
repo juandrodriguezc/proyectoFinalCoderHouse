@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import ProductManager from '../dao/productManagerDao.js';
+import {ProductManager} from '../dao/productManagerDao.js';
 import { rutaProductos } from '../utils.js';
 import { modeloProductos } from '../dao/models/producto.modelo.js';
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';

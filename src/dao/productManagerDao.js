@@ -16,15 +16,13 @@ export class ProductManager {
     }
 
     async getProductById(id){
-        // return this.usuarios
-        // return await modeloUsuarios.findOne({id})
         return await modeloProductos.findById(id).lean()
     }
     
     // Función para crear un nuevo producto
     async addProduct(nombre, precio) {
         try {
-            const newProduct = await modeloProductos.create({ nombre, precio }).lean();
+            const newProduct = await modeloProductos.create({ nombre, precio });
             console.log('Producto agregado:', newProduct);
             return newProduct;
         } catch (error) {
@@ -52,5 +50,3 @@ export class ProductManager {
         }
     }
 }
-
-export default ProductManager;

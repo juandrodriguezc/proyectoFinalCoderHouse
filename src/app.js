@@ -11,6 +11,7 @@ import {router as cartsRouter} from './routes/cartsRouter.js';
 import {router as sessionRouter} from './routes/sessionRouter.js';
 import passport from 'passport';
 import { initPassport } from './config/passport.config.js';
+import {router as usuariosRouter} from './routes/usuariosRouter.js'
 
 
 const PORT=3000;
@@ -46,6 +47,7 @@ app.use("/api/carts",
 next()}, cartsRouter);
 app.use('/', listadoRouter )
 app.use('/api/sessions', sessionRouter)
+app.use('/api/usuarios', usuariosRouter)
 
 const server=app.listen(PORT,()=>{//Server de Http
     console.log(`Server escuchando en puerto ${PORT}`);

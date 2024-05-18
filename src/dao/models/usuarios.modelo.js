@@ -4,7 +4,7 @@ export const usuariosModelo=mongoose.model('usuarios',new mongoose.Schema({
     nombre: String,
     email:{
         type: String, unique:true
-    }, 
+    },
     password: String,
-    rol: { type: String, enum: ['admin', 'comun'], default: 'comun' }
+    rol: { type: String, enum: ['admin', 'usuario'], default: 'Usuario' }
 }))

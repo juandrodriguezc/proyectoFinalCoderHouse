@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 
 const productosSchema = new mongoose.Schema({
-    name: String,
+    nombre: String,
     precio: Number
 });
 
