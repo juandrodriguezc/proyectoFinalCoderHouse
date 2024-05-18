@@ -33,7 +33,7 @@ export class ProductManager {
 
     //funcion para modificar producto
     async update(id, modificacion={}){
-        return await modeloUsuarios.updateOne({_id:id}, modificacion)
+        return await modeloProductos.updateOne({_id:id}, modificacion)
     }
     // Función para eliminar un producto
     async deleteProduct(id) {

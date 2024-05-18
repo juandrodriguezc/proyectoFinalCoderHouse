@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import {ProductManager as ProductDao} from "../dao/productManagerDao.js";
 
 const productDao=new ProductDao()
@@ -36,7 +37,7 @@ export default class productosController{
 
     static getProductosById=async (req, res) => {
         let { id } = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!isValidObjectId(id)) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({ error: `Id inválido` })
         }
@@ -47,7 +48,7 @@ export default class productosController{
         }
     
         try {
-            let resultado = await productManager.update(id, aModificar)
+            let resultado = await productDao.update(id, aModificar)
             if (resultado.modifiedCount > 0) {
                 res.status(200).json({
                     message: `Producto actualizado correctamente`

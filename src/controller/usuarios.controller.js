@@ -16,7 +16,7 @@ export default class UsuariosController{
         let {id}=req.params
         if(!isValidObjectId(id)){
             res.setHeader('Content-Type','application/json');
-            return res.status(400).json({error:`Ingrese un id de MongoDB válido`})
+            return res.status(400).json({error:`Ingrese un id válido`})
         }
 
         let usuario=await usuariosDao.getBy({_id:id})
