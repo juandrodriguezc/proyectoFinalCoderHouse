@@ -35,6 +35,35 @@ export default class productosController{
         res.status(201).json({nuevoProducto})
     }
 
+    static eliminarProducto= async(req,res)=>{
+        let {id}=req.params
+        if(!isValidObjectId(id)){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:`Id invalido`})
+        }
+    
+        try {
+            let resultado=await productManager.delete(id)
+            if(resultado.deletedCount>0){
+                res.status(200).json({
+                    message:`Producto eliminado correctamente`
+                })
+            }else{
+                res.setHeader('Content-Type','application/json');
+                return res.status(400).json({error:`No existe el producto con id ${id}`})
+            }
+        } catch (error) {
+            res.setHeader('Content-Type','application/json');
+            return res.status(500).json(
+                {
+                    error:`Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+                    detalle:`${error.message}`
+                }
+            )
+            
+        }
+    }    
+
     static getProductosById=async (req, res) => {
         let { id } = req.params
         if (!isValidObjectId(id)) {
