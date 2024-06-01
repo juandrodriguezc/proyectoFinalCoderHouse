@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import { CartManager as CartDao } from "../dao/cartManagerDao.js";
 import { ProductManager as ProductDao } from "../dao/productManagerDao.js";
 
@@ -41,27 +42,28 @@ export default class carritoController{
         }
     }
 
-    static getProductInCart=async (req, res) => {
+    static getProductInCart = async (req, res) => {
         const { id: cartId, productId } = req.params;
+        if (!isValidObjectId(productId) || !isValidObjectId(cartId)) {
+            return res.status(400).send('Error: ID de producto o carrito no válido');
+        }
+
+
         try {
-            const productToAdd = await productDao.getProductById(productId);
-            if (productToAdd) {
-                const cart = await cartDao.getCartById(cartId);
-                if (cart) {
-                    cart.products.push(productToAdd);
-                    await cart.save();
-                    res.status(200).json(cart);
-                } else {
-                    res.status(404).send('Error 404. Carrito no encontrado');
-                }
-            } else {
-                res.status(404).send('Error 404. Producto no encontrado');
+            const productToAdd = await productDao.getProductById({ _id: productId });
+            if (!productToAdd) {
+                return res.status(404).send('Error 404. Producto no encontrado');
             }
+
+            const updatedCart = await cartDao.addProductToCart(cartId, productToAdd);
+            if (!updatedCart) {
+                return res.status(404).send('Error 404. Carrito no encontrado');
+            }
+
+            res.status(200).json(updatedCart);
         } catch (error) {
             console.error('Error al agregar un producto al carrito:', error);
             res.status(500).send('Error al agregar un producto al carrito');
         }
     }
-
-    
-}
+    }

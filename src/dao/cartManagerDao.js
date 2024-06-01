@@ -3,29 +3,21 @@ import { modeloCarrito } from '../dao/models/carrito.modelo.js';
 export class CartManager {
     constructor() {
     }
+    
+    async getCarts() {
+       return await modeloCarrito.find().lean()
+    }
 
     // Crear un nuevo carrito
     async createCart() {
-        try {
             const cartsCount = await modeloCarrito.countDocuments();
-            const newCart = await modeloCarrito.create({ id: cartsCount + 1, products: [] });
-            console.log('Carrito creado:', newCart);
-            return newCart;
-        } catch (error) {
-            console.error('Error al crear un nuevo carrito:', error);
-            throw error;
-        }
+        return await modeloCarrito.create({ id: cartsCount + 1, products: [] });
     }
 
     // Obtener un carrito por su ID
     async getCartById(cartId) {
-        try {
-            const cart = await modeloCarrito.findOne({ id: cartId });
-            return cart;
-        } catch (error) {
-            console.error('Error al obtener el carrito por ID:', error);
-            throw error;
-        }
+    return await modeloCarrito.findOne({ id: cartId });
+    
     }
 
     // Agregar un producto al carrito
@@ -33,7 +25,7 @@ export class CartManager {
         try {
             const cart = await modeloCarrito.findOne({ id: cartId });
             if (cart && productToAdd) {
-                cart.products.push(productToAdd);
+                cart.productos.push(productToAdd);
                 await cart.save();
                 console.log(`Producto "${productToAdd.nombre}" agregado al carrito ${cartId}.`);
             } else {
@@ -46,14 +38,5 @@ export class CartManager {
     }
 
     // Obtener todos los carritos
-    async getCarts() {
-        try {
-            const carts = await modeloCarrito.find();
-            return carts;
-        } catch (error) {
-            console.error('Error al obtener los carritos:', error);
-            throw error;
-        }
-    }
 }
 

@@ -1,7 +1,7 @@
 <h1>Pagina de Productos</h1>
 <hr>
 
-<h2>Bienvenido {{nombreUsuario}}, Acá está nuestro listado de Productos:</h2>
+<h2>Bienvenido, Acá está nuestro listado de Productos:</h2>
 
 <ul id="productos">
     {{#each productos}}
@@ -41,7 +41,7 @@
 
 </script>
 
-<script>
+{{!-- <script>
     document.addEventListener('DOMContentLoaded', () => {
         const botonesAgregarCarrito = document.querySelectorAll('.agregar-carrito');
         botonesAgregarCarrito.forEach(boton => {
@@ -66,6 +66,6 @@
             });
         });
     });
-</script>
+</script> --}}
 
 <script src="socket.io/socket.io.js"></script>

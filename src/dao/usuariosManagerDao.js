@@ -11,7 +11,7 @@ export class UsuariosManagerDao{
         return nuevoUsuario.toJSON()
     }
 
-    async getBy(filtro){   // {email}
+    async getBy(filtro={}){   // {email}
         return await usuariosModelo.findOne(filtro).lean()
     }
 

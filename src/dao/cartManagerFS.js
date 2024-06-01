@@ -23,7 +23,7 @@
 //         const cart = this.getCartById(cartId);
 
 //         if (cart && productToAdd) {
-//             cart.products.push(productToAdd);
+//             cart..push(productToAdd);
 //             this.saveCarts();
 //             console.log(`Producto "${productToAdd.nombre}" agregado al carrito ${cartId}.`);
 //         } else {

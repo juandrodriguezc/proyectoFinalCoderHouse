@@ -13,4 +13,4 @@ import carritoController from "../controller/carrito.controller.js";
     router.post('/', carritoController.createCarrito)
 
     // Agregar un producto a un carrito
-    router.post('/:id/products/:productId', carritoController.getProductInCart);
+    router.post('/:id/productos/:productId', carritoController.getProductInCart);

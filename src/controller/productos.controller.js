@@ -7,7 +7,7 @@ export default class productosController{
     static getProductos=async (req, res) => {
         try {
             // Utiliza populate para cargar los datos relacionados (si es necesario)
-            const productos = await productDao.getProduct();
+            const productos = await productDao.getProducts();
             res.status(200).render('productos', { productos });
         } catch (error) {
             console.error("Error al obtener productos:", error);
@@ -43,7 +43,7 @@ export default class productosController{
         }
     
         try {
-            let resultado=await productManager.delete(id)
+            let resultado=await productDao.deleteProduct(id)
             if(resultado.deletedCount>0){
                 res.status(200).json({
                     message:`Producto eliminado correctamente`
@@ -65,35 +65,15 @@ export default class productosController{
     }    
 
     static getProductosById=async (req, res) => {
-        let { id } = req.params
-        if (!isValidObjectId(id)) {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(400).json({ error: `Id inválido` })
+        let {id}=req.params
+        if(!isValidObjectId(id)){
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:`Ingrese un id de MongoDB válido`})
         }
-    
-        let aModificar = req.body
-        if (aModificar._id) {
-            delete aModificar._id
-        }
-    
-        try {
-            let resultado = await productDao.update(id, aModificar)
-            if (resultado.modifiedCount > 0) {
-                res.status(200).json({
-                    message: `Producto actualizado correctamente`
-                })
-            } else {
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(400).json({ error: `No existe el producto con id ${id}` })
-            }
-        } catch (error) {
-            res.setHeader('Content-Type', 'application/json');
-            return res.status(500).json(
-                {
-                    error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
-                    detalle: `${error.message}`
-                }
-            )
-        }
+
+        let producto=await productDao.getProductById({_id:id})
+
+        res.setHeader('Content-Type','application/json')
+        res.status(200).json({producto})
     }
 }

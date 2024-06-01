@@ -30,19 +30,22 @@ router.get('/productos',async(req,res)=>{
     let {
         docs:productos,
         totalPages, 
-        prevPage, nextPage, 
-        hasPrevPage, hasNextPage
+        prevPage,
+        nextPage, 
+        hasPrevPage,
+        hasNextPage
     } = await modeloProductos.paginate({},{limit:3, page:pagina, lean:true})
-
     console.log(JSON.stringify(productos, null, 5 ))
-
+console.log(req.session)
     res.setHeader('Content-Type','text/html')
     res.status(200).render("productos",{
         nombreUsuario,
         productos,
         totalPages, 
-        prevPage, nextPage, 
-        hasPrevPage, hasNextPage
+        prevPage, 
+        nextPage, 
+        hasPrevPage, 
+        hasNextPage
     })
 })
 
