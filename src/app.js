@@ -1,6 +1,6 @@
 import express from 'express';
 import session from 'express-session';
-import __dirname from "./utils.js"
+import __dirname, { logger, middLogg } from "./utils.js"
 import path from "path";
 import { Server } from 'socket.io'
 import handlebars from "express-handlebars"
@@ -24,6 +24,7 @@ app.engine("handlebars", handlebars.engine())
 app.set("view engine", "handlebars")
 app.set("views", path.join(__dirname, "views"))
 
+app.use(middLogg)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(session(
@@ -52,7 +53,8 @@ app.use('/api/usuarios', usuariosRouter)
 app.use('/api/mokingproducts', mokingRouter)
 
 const server=app.listen(PORT,()=>{//Server de Http
-    console.log(`Server escuchando en puerto ${PORT}`);
+   
+    logger.info(`Server escuchando en puerto ${PORT}`);
 });
 
 io=new Server(server)//Server de WebSocket

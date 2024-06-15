@@ -4,6 +4,7 @@ import crypto from "crypto"
 import bcrypt from 'bcrypt'
 import passport from 'passport';
 import { faker } from '@faker-js/faker';
+import winston from 'winston';
 
 
 //dirname
@@ -48,4 +49,23 @@ export const generateProducts=()=>{
         price: faker.commerce.price(),
         id: faker.database.mongodbObjectId()
     }
+}
+
+//Winston
+export const logger=winston.createLogger(
+    {
+        transports:[
+            new winston.transports.Console(
+                {
+                    level: "info",
+                
+                }
+            )
+        ]
+    }
+)
+
+export const middLogg=(req, res, next)=>{
+    req.logger=logger
+    next()
 }
