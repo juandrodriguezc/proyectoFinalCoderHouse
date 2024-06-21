@@ -13,9 +13,11 @@ import passport from 'passport';
 import { initPassport } from './config/passport.config.js';
 import {router as usuariosRouter} from './routes/usuariosRouter.js'
 import { router as mokingRouter } from './routes/productosMokingRouter.js';
+import { config } from './config/config.js';
 
 
-const PORT=3000;
+
+const PORT=config.PORT;
 let io;
 const app=express();
 
@@ -53,22 +55,21 @@ app.use('/api/usuarios', usuariosRouter)
 app.use('/api/mokingproducts', mokingRouter)
 
 const server=app.listen(PORT,()=>{//Server de Http
-   
     logger.info(`Server escuchando en puerto ${PORT}`);
 });
 
 io=new Server(server)//Server de WebSocket
 
 io.on('connection', socket=>{
-    console.log(`Se ha conectado un usuario con id ${socket.id}`)
+    logger.info(`Se ha conectado un usuario con id ${socket.id}`)
 })
 
 const connect=async()=>{
     try {
         await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"Ecommerce"})
-        console.log("DB Online...!!!")
+        logger.info("DB Online...!!!")
     } catch (error) {
-        console.log("Fallo conexión. Detalle:", error.message)
+        logger.debug("Fallo conexión. Detalle:", error.message)
     }
 }
 connect()
