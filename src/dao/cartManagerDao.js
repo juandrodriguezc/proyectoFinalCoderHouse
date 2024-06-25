@@ -25,7 +25,7 @@ export class CartManager {
         try {
             const cart = await modeloCarrito.findOne({ id: cartId });
             if (cart && productToAdd) {
-                cart.productos.push(productToAdd);
+                cart.products.push(productToAdd);
                 await cart.save();
                 console.log(`Producto "${productToAdd.nombre}" agregado al carrito ${cartId}.`);
             } else {

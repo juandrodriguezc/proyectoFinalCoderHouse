@@ -6,5 +6,6 @@ dotenv.config({
 
 export const config={
     PORT:process.env.PORT||3001,
+    MONGO_URL: process.env.MONGO_URL,
     MODE:process.env.MODE||"development"
 }
