@@ -66,7 +66,7 @@ io.on('connection', socket=>{
 
 const connect=async()=>{
     try {
-        await mongoose.connect("mongodb+srv://rodriguezcolmenaresjuand:coderhouse@cluster0.2ufzjxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{dbName:"Ecommerce"})
+        await mongoose.connect(config.MONGO_URL,{dbName:config.DB_NAME})
         logger.info("DB Online...!!!")
     } catch (error) {
         logger.debug("Fallo conexión. Detalle:", error.message)

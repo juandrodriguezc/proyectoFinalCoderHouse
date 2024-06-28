@@ -2,9 +2,22 @@ import { Router } from 'express';
 import { UsuariosManagerDao } from '../dao/usuariosManagerDao.js';
 import { creaHash, passportCall } from '../utils.js';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer'
+
 export const router=Router()
 
+
+
 let usuariosManager=new UsuariosManagerDao()
+
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});
 
 router.get("/usuarios", async(req, res)=>{
     let usuarios=await usuarioModelo.find().populate("rol").lean()
