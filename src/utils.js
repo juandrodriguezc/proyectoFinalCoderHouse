@@ -5,6 +5,7 @@ import passport from 'passport';
 import { faker } from '@faker-js/faker';
 import winston from 'winston';
 import { config } from './config/config.js';
+import nodemailer from 'nodemailer';
 
 
 
@@ -18,7 +19,6 @@ export const rutaProductos=join(__dirname, "data", "productos.json")
 export const rutaCarrito=join(__dirname, "data", "carts.json")
 
 //passwords
-const SECRET="coderhouse"
 export const creaHash=password=>bcrypt.hashSync(password, bcrypt.genSaltSync(10))
 export const validaPassword=(usuario, password)=>bcrypt.compareSync(password, usuario.password)
 //passport
@@ -38,6 +38,27 @@ export const passportCall = (estrategia) => {
             return next();
         })(req, res, next);
     };
+};
+
+//Enviar mail
+
+export const sendEmail = async (to, subject, text) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: config.EMAIL,
+            pass: config.EMAILPASSWORD
+        }
+    });
+
+    const mailOptions = {
+        from: config.EMAIL,
+        to,
+        subject,
+        text
+    };
+
+    await transporter.sendMail(mailOptions);
 };
 
 //faker

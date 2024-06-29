@@ -12,6 +12,23 @@ export default class UsuariosController{
     return res.status(200).json({usuarios});
     }
 
+    static updatePassword = async (req, res) => {
+        const { email, newPassword } = req.body;
+
+        if (!email || !newPassword) {
+            return res.status(400).json({ error: 'Email y nueva contraseña son requeridos' });
+        }
+
+        const updatedUser = await usuariosDao.updateUserPassword(email, newPassword);
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        return res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+    }
+
+
     static getUsuariosById=async(req, res)=>{
         let {id}=req.params
         if(!isValidObjectId(id)){

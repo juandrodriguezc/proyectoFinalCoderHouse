@@ -14,5 +14,17 @@ export class UsuariosManagerDao{
     async getBy(filtro={}){   // {email}
         return await usuariosModelo.findOne(filtro).lean()
     }
+    
+    async findUserByEmail(email) {
+        return await usuariosModelo.findOne({ email });
+    }
 
+    async updateUserPassword(email, newPassword) {
+        const user = await usuariosModelo.findOne({ email });
+        if (user) {
+            user.password = newPassword;
+            return await user.save();
+        }
+        return null;
+    }
 }

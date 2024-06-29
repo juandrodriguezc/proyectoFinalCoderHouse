@@ -4,20 +4,13 @@ import { creaHash, passportCall } from '../utils.js';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer'
+import SessionsController from '../controller/sessions.controller.js';
 
 export const router=Router()
 
 
 
 let usuariosManager=new UsuariosManagerDao()
-
-const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
 
 router.get("/usuarios", async(req, res)=>{
     let usuarios=await usuarioModelo.find().populate("rol").lean()
@@ -63,6 +56,13 @@ router.post('/login',async(req,res)=>{
 //         message:"Login correcto", usuario
 //     })
 })
+
+//Recuperacion de Contraseña
+
+router.post('/recupero01', SessionsController.recupero01);
+router.get('/recupero02', SessionsController.recupero02);
+router.post('/recupero03', SessionsController.recupero03);
+
 
 
 router.get('/logout', (req, res) => {

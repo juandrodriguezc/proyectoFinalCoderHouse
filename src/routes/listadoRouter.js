@@ -78,4 +78,15 @@ router.get('/perfil', auth, (req,res)=>{
     res.status(200).render('perfil', {usuario})
 })
 
+router.get('/recuperacion', (req, res)=>{
+    res.status(200).render('recuperacion')
+})
+
+router.get('/recuperacion2', (req, res)=>{
+    res.status(200).render('recuperacion2')
+})
+
+router.get('/recuperacion3', (req, res)=>{
+    res.status(200).render('recuperacion3')
+})
 export default router;

@@ -1,0 +1,13 @@
+<h1>Actualizar contraseña</h1>
+
+<form action="/api/sessions/recupero03" method="POST">
+        <input type="hidden" id="token" name="token" value="">
+        <label for="password">Nueva Contraseña:</label>
+        <input type="password" id="password" name="newPassword" required>
+        <button type="submit">Actualizar</button>
+    </form>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        document.getElementById('token').value = token;
+    </script>
