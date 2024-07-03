@@ -14,12 +14,26 @@ import { initPassport } from './config/passport.config.js';
 import {router as usuariosRouter} from './routes/usuariosRouter.js'
 import { router as mokingRouter } from './routes/productosMokingRouter.js';
 import { config } from './config/config.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express'
 
 
 
 const PORT=config.PORT;
 let io;
 const app=express();
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "ABM / Usuarios",
+            version: "1.0.0",
+            description: "Documentación del proyecto ABM Usuarios"
+        },
+    },
+    apis: [`${__dirname}/docs/*.yaml`]
+}
+const spec = swaggerJsdoc(options)
 
 
 app.engine("handlebars", handlebars.engine())
@@ -29,6 +43,7 @@ app.set("views", path.join(__dirname, "views"))
 app.use(middLogg)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec))
 app.use(session(
     {
     secret:"coderhouse",
