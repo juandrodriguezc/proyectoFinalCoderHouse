@@ -1,11 +1,17 @@
 <h1>Carrito de Compras</h1>
 <hr>
 
+{{!-- Imprimir el contexto para depuración --}}
+<pre>{{log this}}</pre>
+
 {{#each carts}}
-<h2>Carrito {{ this._id }}</h2>
+<h2>Carrito {{_id}}</h2>
 <ul>
-    {{#each this.products}}
-    <li>{{ this.nombre }} - {{ this.precio }}$ - Cantidad: {{ this.cantidad }}</li>
+    {{#each productos}}
+    <li>
+        {{nombre}} - {{precio}}$ - Cantidad: {{cantidad}}
+        <button class="eliminar-producto" data-id="{{_id}}">Eliminar</button>
+    </li>
     {{/each}}
 </ul>
 {{/each}}
