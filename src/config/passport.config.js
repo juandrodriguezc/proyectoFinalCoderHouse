@@ -31,7 +31,7 @@ export const initPassport=()=>{
                 
                     password=creaHash(password)
                 
-                    let nuevoUsuario=await usuariosManager.create({nombre, email, password})
+                    let nuevoUsuario=await usuariosManager.create({nombre, email, password,lastLogin: new Date()})
             
                     
                     return done(null, nuevoUsuario)

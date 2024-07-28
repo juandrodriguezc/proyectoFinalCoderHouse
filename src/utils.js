@@ -58,7 +58,7 @@ export const sendEmail = async (to, subject, text) => {
         text
     };
 
-    await transporter.sendMail(mailOptions);
+    await transporter.sendEmail(mailOptions);
 };
 
 //faker

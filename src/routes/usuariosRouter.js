@@ -5,3 +5,4 @@ export const router=Router()
 router.get('/', UsuariosController.getUsuarios)
 router.get('/:id', UsuariosController.getUsuariosById)
 router.post('/', UsuariosController.create)
+router.delete('/inactivos', UsuariosController.deleteOldUsers);

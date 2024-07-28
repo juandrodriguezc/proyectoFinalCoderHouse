@@ -6,5 +6,6 @@ export const usuariosModelo=mongoose.model('usuarios',new mongoose.Schema({
         type: String, unique:true
     },
     password: String,
+    lastLogin: Date,
     rol: { type: String, enum: ['Admin', 'Usuario'], default: 'Usuario' }
 }))
