@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {ProductManager} from '../dao/productManagerDao.js';
 import { rutaProductos } from '../utils.js';
-import { modeloProductos } from '../dao/models/producto.modelo.js';
+import { modeloProductos } from '../dao/models/productos.modelo.js';
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';
 import { auth } from '../middlewares/auth.js';
 
@@ -52,7 +52,7 @@ console.log(req.session)
 router.get('/carts', async (req, res) => {
     try {
         const carts = await modeloCarrito.find();
-        res.status(200).render('carts',{carts});
+        res.status(200).render('carrito',{carts});
     } catch (error) {
         console.error('Error al obtener los carritos:', error);
         res.status(500).send('Error al obtener los carritos');

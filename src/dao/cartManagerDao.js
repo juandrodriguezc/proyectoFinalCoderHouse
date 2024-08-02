@@ -56,6 +56,8 @@ async getCartById(filtro) {
         }
     }
 
-    // Obtener todos los carritos
+async update(id, carrito){
+        return await modeloCarrito.updateOne({_id:id}, carrito)
+    }
 }
 
