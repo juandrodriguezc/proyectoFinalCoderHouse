@@ -10,6 +10,9 @@ export const usuariosModelo = mongoose.model(
     },
     password: String,
     lastLogin: Date,
+    carrito: {
+      type: mongoose.Types.ObjectId, ref: "carritos"
+  },
     rol: { type: String, enum: ["Admin", "Usuario"], default: "Usuario" },
   })
 );

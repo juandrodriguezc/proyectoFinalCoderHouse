@@ -18,6 +18,11 @@ const ticketsDAO=new TicketsDAO()
     // Obtener un carrito por su ID
     router.get('/:id', carritoController.getCarritoById)
 
+    router.post('/', carritoController.createCarrito)
+
+    // Agregar un producto a un carrito
+    router.post('/:id/productos/:productId', carritoController.getProductInCart);
+
     router.get("/comprar/:cid", async(req, res)=>{
         let {cid}=req.params
         if(!isValidObjectId(cid)){
@@ -111,12 +116,4 @@ const ticketsDAO=new TicketsDAO()
                 }
             )
         }
-    
-
-    // Crear un nuevo carrito
-    router.post('/', carritoController.createCarrito)
-
-    // Agregar un producto a un carrito
-    router.post('/:id/productos/:productId', carritoController.getProductInCart);
-
     })

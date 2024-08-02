@@ -14,7 +14,7 @@ export class ProductManager {
 
   // Función para crear un nuevo producto
   async addProduct(nombre, precio) {
-    const newProduct = await modeloProductos.create({ nombre, precio });
+    return await modeloProductos.create({ nombre, precio });
   }
 
   //funcion para modificar producto
@@ -23,6 +23,6 @@ export class ProductManager {
   }
   // Función para eliminar un producto
   async deleteProduct(id) {
-    return await modeloProductos.findByIdAndDelete(id).lean();
+    return await modeloProductos.findByIdAndDelete(id);
   }
 }

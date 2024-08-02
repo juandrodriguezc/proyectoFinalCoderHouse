@@ -42,7 +42,7 @@ async getCartById(filtro) {
             const cart = await modeloCarrito.findOne({ _id: objectId });
     
             if (cart && productToAdd) {
-                cart.products.push(productToAdd);
+                cart.productos.push(productToAdd);
                 await cart.save();
                 console.log(`Producto "${productToAdd.nombre}" agregado al carrito ${cartId}.`);
                 return cart; // Devuelve el carrito actualizado

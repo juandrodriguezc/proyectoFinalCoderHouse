@@ -10,7 +10,7 @@ export default class carritoController{
     static getCarrito=async (req, res) => {
         try {
             const carts = await cartDao.getCarts();
-            res.status(200).render('carts', {carts});
+            res.status(200).json({carts});
         } catch (error) {
             console.error('Error al obtener los carritos:', error);
             res.status(500).send('Error al obtener los carritos');
