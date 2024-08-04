@@ -16,34 +16,32 @@ export default class productosController{
     };
     
     static crearProducto = async (req, res) => {
-        const { nombre, precio } = req.body;
-        console.log('Nombre del producto recibido:', nombre);
-        console.log('Precio recibido:', precio);
-    
-        if (!nombre || !precio) {
+        const { nombre, precio, code } = req.body;
+
+        if (!nombre || !precio || !code) {
             res.setHeader('Content-Type', 'application/json');
             return res.status(400).json({ error: 'Complete los datos del producto' });
         }
-    
+
         try {
-            let nuevoProducto = await productDao.addProduct(nombre, precio);
+            let nuevoProducto = await productDao.addProduct(nombre, precio, code);
             if (!nuevoProducto) {
                 res.setHeader('Content-Type', 'application/json');
-                return res.status(500).json({ error: 'Error inesperado en el servidor' });
+                return res.status(409).json({ error: 'Producto con ese código ya existe' });
             }
-    
+
             if (req.io) {
                 req.io.emit("nuevoProducto", nuevoProducto);
             } else {
                 console.log('req.io no está definido');
             }
-    
+
             res.setHeader('Content-Type', 'application/json');
             res.status(201).json({ nuevoProducto });
         } catch (error) {
             console.error('Error al crear el producto:', error);
             res.setHeader('Content-Type', 'application/json');
-            res.status(500).json({ error: 'Error inesperado en el servidor' });
+            res.status(500).json({ error: 'Ya existe un producto con ese codigo' });
         }
     }
     

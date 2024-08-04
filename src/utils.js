@@ -21,22 +21,25 @@ export const creaHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync
 export const validaPassword = (userPassword, hashedPassword) => bcrypt.compareSync(userPassword, hashedPassword);
 
 // passport
-export const passportCall = (estrategia) => {
-    return function (req, res, next) {
-        passport.authenticate(estrategia, function (err, user, info, status) {
-            if (err) {
-                return next(err); // Devolver el error al middleware de manejo de errores
-            }
-            if (!user) {
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(401).json({
-                    error: info && info.message ? info.message : 'Error de autenticación'
-                });
-            }
-            req.user = user;
-            return next();
-        })(req, res, next);
-    };
+export const passportCall = (estrategia) => function (req, res, next) {
+    passport.authenticate(estrategia, function (err, user, info, status) {
+        if (err) { return next(err) }
+        if (!user) {
+            res.setHeader('Content-Type','application/json');
+            return res.status(400).json({error:info.message?info.message:info.toString()})
+        }
+        // res.redirect('/account');
+        req.user=user
+        return next()
+    })(req, res, next);
+}
+
+export const authorizeAdmin = (req, res, next) => {
+    if (req.user && req.user.rol === 'admin') {
+        return next();
+    } else {
+        return res.status(403).json({ error: 'Acceso denegado. Requiere rol de administrador.' });
+    }
 };
 
 // Enviar mail

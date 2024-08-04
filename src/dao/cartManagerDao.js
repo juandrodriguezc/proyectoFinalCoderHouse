@@ -16,17 +16,18 @@ export class CartManager {
     }
 
  // Obtener un carrito por su ID
-async getCartById(filtro) {
+ async getCartById(filtro) {
     console.log('Filtro recibido:', filtro);
     console.log('ID del filtro:', filtro._id);
     console.log('Tipo de filtro._id:', typeof filtro._id);
 
     try {
+        // Verificar si el ID es válido
         if (!mongoose.Types.ObjectId.isValid(filtro._id)) {
             throw new Error('ID inválido');
         }
 
-        // Usa mongoose.Types.ObjectId para convertir el ID
+        // Convertir el ID a ObjectId
         const objectId = new mongoose.Types.ObjectId(filtro._id);
         return await modeloCarrito.findOne({ _id: objectId }).lean();
     } catch (error) {

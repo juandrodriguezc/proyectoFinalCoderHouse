@@ -13,12 +13,18 @@ export class ProductManager {
   }
 
   // Función para crear un nuevo producto
-  async addProduct(nombre, precio) {
-    return await modeloProductos.create({ nombre, precio });
+  async addProduct(nombre, precio, code) {
+    return await modeloProductos.create({ nombre, precio, code });
   }
 
   //funcion para modificar producto
   async update(id, producto) {
+    const productoExistente = await modeloProductos.findOne({ code });
+        if (productoExistente) {
+          return res
+          .status(400)
+          .json({ error: `Ya existe un producto con el code ${code}` })
+        }
     return await modeloProductos.updateOne({ _id: id }, producto);
   }
   // Función para eliminar un producto

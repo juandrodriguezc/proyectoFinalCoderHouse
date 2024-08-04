@@ -16,6 +16,7 @@ import { router as mokingRouter } from './routes/productosMokingRouter.js';
 import { config } from './config/config.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express'
+import cookieParser from 'cookie-parser';
 
 
 
@@ -35,6 +36,7 @@ const options = {
 }
 const spec = swaggerJsdoc(options)
 
+app.use(cookieParser());
 
 app.engine("handlebars", handlebars.engine())
 app.set("view engine", "handlebars")
@@ -46,9 +48,10 @@ app.use(express.urlencoded({extended:true}));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec))
 app.use(session(
     {
-    secret:"coderhouse",
+    secret:config.SECRET,
     resave:true,
     saveUninitialized:true,
+    cookie:{secure:false}
     })
 
 )

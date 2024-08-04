@@ -5,6 +5,8 @@ import { UsuariosManagerDao } from "../dao/usuariosManagerDao.js";
 import { CartManager as CartDao } from "../dao/cartManagerDao.js";
 import passportJWT from 'passport-jwt';
 import { config } from "./config.js";
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import jwt from 'jsonwebtoken'
 
 const usuariosManager = new UsuariosManagerDao();
 const carritoManager = new CartDao();
@@ -65,24 +67,28 @@ export const initPassport = () => {
             },
             async (username, password, done) => {
                 try {
-                    console.log({ username });
+                    console.log({ username }); // Verifica el nombre de usuario recibido
                     let usuario = await usuariosManager.getBy({ email: username });
                     if (!usuario) {
-                        return done(null, false);
+                        return done(null, false, { message: "Usuario no encontrado" });
                     }
-
+    
                     if (!validaPassword(password, usuario.password)) {
-                        return done(null, false, { message: "Credenciales invalidas" });
+                        return done(null, false, { message: "Credenciales inválidas" });
                     }
+    
+                    // Eliminar la contraseña del usuario antes de devolverlo
                     delete usuario.password;
-
-                    return done(null, usuario);
+    
+                    // Devolver el usuario y el token
+                    return done(null, { usuario });
                 } catch (error) {
                     return done(error);
                 }
             }
         )
     );
+    
 
     passport.use(
         "current",
@@ -101,6 +107,27 @@ export const initPassport = () => {
         )
     );
 
+    passport.use(
+        new JwtStrategy(
+            {
+                jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+                secretOrKey: config.SECRET
+            },
+            async (jwtPayload, done) => {
+                try {
+                    const user = await usuariosDao.findUserByEmail(jwtPayload.email);
+                    if (user) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false);
+                    }
+                } catch (error) {
+                    return done(error, false);
+                }
+            }
+        )
+    );
+
     passport.serializeUser((usuario, done) => {
         return done(null, usuario._id);
     });
@@ -109,4 +136,11 @@ export const initPassport = () => {
         let usuario = await usuariosManager.getBy({ _id: id });
         return done(null, usuario);
     });
+};
+
+export const authAdmin = (req, res, next) => {
+    if (!req.isAuthenticated() || req.user.rol !== 'admin') {
+        return res.status(403).json({ error: 'Acceso denegado. Solo los administradores pueden realizar esta acción.' });
+    }
+    next();
 };

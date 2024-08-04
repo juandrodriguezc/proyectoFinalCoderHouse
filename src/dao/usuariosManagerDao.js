@@ -46,4 +46,15 @@ export class UsuariosManagerDao{
         }
         return null;
     }
+
+    async update(id, updates) {
+        try {
+            // Actualiza el usuario con el id especificado y los datos de actualización proporcionados
+            const updatedUser = await usuariosModelo.findByIdAndUpdate(id, updates, { new: true });
+            return updatedUser;
+        } catch (error) {
+            console.error('Error al actualizar el usuario:', error);
+            throw new Error('Error al actualizar el usuario');
+        }
+    }
 }

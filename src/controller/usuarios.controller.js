@@ -97,4 +97,27 @@ export default class UsuariosController {
       });
     }
   };
+
+  static obtener = async(req,res)=>{
+
+    let {id}=req.params
+    let {name, email}=req.body
+  
+    let usuario=await usuariosDao.getBy({where:{id}})
+    if(!usuario){
+        res.setHeader('Content-Type','application/json');
+        return res.status(400).json({error:`No existen usuarios con id ${id}`})
+    }
+
+    if(name){
+        usuario.name=name
+    }
+    if(email){
+        usuario.email=email
+    }
+    await usuario.save()
+
+    res.setHeader('Content-Type','application/json')
+    res.status(200).json({usuario})
+}
 }

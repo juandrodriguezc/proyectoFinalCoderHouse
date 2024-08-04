@@ -3,18 +3,7 @@
 
 <h2>Bienvenido, Acá está nuestro listado de Productos:</h2>
 
-<h3 data-carrito="{{usuario.carrito}}" id="h3Usuario">Usuario conectado: {{usuario.nombre}}</h3>
-{{!-- <input type="text" id="carrito" value="{{usuario.carrito}}" hidden> --}}
 <ul>
-    {{#each productos}}
-        <li>
-            {{descripcion}} - precio: {{precio}} <button onclick="agregar('{{_id}}')">Agregar a carrito</button>
-        </li>
-    {{/each}}
-</ul>
-
-
-{{!-- <ul id="productos">
     {{#each productos}}
     <li>{{nombre}} - {{precio}}$ <button class="agregar-carrito" data-id="{{_id}}">Agregar al carrito</button></li>
     {{/each}}
@@ -25,7 +14,7 @@
 </li>
 <li>
     <a href="/api/sessions/logout">Cerrar sesion</a>
-</li> --}}
+</li>
 
 <a href="/productos?pagina=1">Pag.1</a>
 

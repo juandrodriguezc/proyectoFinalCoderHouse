@@ -6,9 +6,10 @@ const productoSchema = new mongoose.Schema(
     {
         nombre: String,
         descripcion: String, 
-        codigo: {
+        code: {
             type: String,
-            unique: true
+            unique: true,
+            required:true
         },
         precio: Number,
         stock: Number

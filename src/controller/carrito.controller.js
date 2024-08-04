@@ -32,7 +32,7 @@ export default class carritoController{
         console.log('ID del carrito recibido:', id);
     
         // Validar si el ID es un ObjectId de MongoDB válido
-        if (!isValidObjectId(id)) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: 'Ingrese un ID de MongoDB válido' });
         }
     
@@ -82,4 +82,79 @@ export default class carritoController{
             res.status(500).send('Error al agregar un producto al carrito');
         }
     }
+
+    static comprarCarrito = async (req, res) => {
+        let { cid } = req.params;
+        if (!isValidObjectId(cid)) {
+            return res.status(400).json({ error: `ID de carrito inválido` });
+        }
+
+        try {
+            let carrito = await cartDao.getCartById({ _id: cid });
+            if (!carrito) {
+                return res.status(400).json({ error: `Carrito inexistente. Id: ${cid}` });
+            }
+
+            if (carrito.productos.length === 0) {
+                return res.status(400).json({ error: `Carrito vacío` });
+            }
+
+            let conStock = [];
+            let sinStock = [];
+            let total = 0;
+
+            for (let i = 0; i < carrito.productos.length; i++) {
+                let pid = carrito.productos[i].producto;
+                let cantidad = carrito.productos[i].cantidad;
+                let producto = await productDao.getProductById({ _id: pid });
+
+                if (!producto || producto.stock - cantidad < 0) {
+                    sinStock.push({ producto: pid, cantidad });
+                } else {
+                    conStock.push({
+                        _id: pid,
+                        descripcion: producto.descripcion,
+                        cantidad,
+                        precio: producto.precio,
+                        subtotal: producto.precio * cantidad,
+                        stockPrevioCompra: producto.stock
+                    });
+                    producto.stock -= cantidad;
+                    await productosDAO.update(pid, producto);
+                    total += cantidad * producto.precio;
+                }
+            }
+
+            if (conStock.length === 0) {
+                return res.status(400).json({ error: `No hay ítems en condiciones de ser facturados` });
+            }
+
+            let nroComp = Date.now();
+            let fecha = new Date();
+            let email = req.user.email;
+
+            let nuevoTicket = await ticketsDAO.create({
+                nroComp, fecha, email,
+                items: conStock, total
+            });
+
+            carrito.productos = sinStock;
+            await carritosDAO.update(cid, carrito);
+
+            let mensaje = `Su compra ha sido procesada...!!! <br>
+            Ticket: <b>${nroComp}</b> - importe a pagar: <b><i>$ ${total}</b></i> <br>
+            Contacte a pagos para finalizar la operación: pagos@cuchuflito.com
+            <br><br>
+            ${sinStock.length > 0 ? `Algunos items del carrito no fueron procesados. Verifique: ${JSON.stringify(sinStock, null, 5)}` : ""}`;
+
+            await sendEmail(email, "Compra realizada con éxito...!!!", mensaje);
+
+            return res.status(200).json({ nuevoTicket });
+        } catch (error) {
+            return res.status(500).json({
+                error: `Error inesperado en el servidor`,
+                detalle: `${error.message}`
+            });
+        }
+    };
     }
