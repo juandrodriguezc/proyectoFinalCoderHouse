@@ -35,12 +35,15 @@ export const passportCall = (estrategia) => function (req, res, next) {
 }
 
 export const authorizeAdmin = (req, res, next) => {
-    if (req.user && req.user.rol === 'admin') {
+    if (req.user && req.user.usuario && req.user.usuario.rol === 'admin') {
         return next();
     } else {
+        console.log('Usuario autenticado:', req.user);
+        console.log('Rol no autorizado:', req.user.usuario ? req.user.usuario.rol : 'undefined');
         return res.status(403).json({ error: 'Acceso denegado. Requiere rol de administrador.' });
     }
 };
+
 
 // Enviar mail
 export const sendEmail = async (to, subject, text) => {

@@ -133,14 +133,15 @@ export const initPassport = () => {
     });
 
     passport.deserializeUser(async (id, done) => {
-        let usuario = await usuariosManager.getBy({ _id: id });
-        return done(null, usuario);
+        try {
+            let usuario = await usuariosManager.getBy({ _id: id });
+            if (usuario) {
+                return done(null, { usuario }); // Empaqueta el usuario en un objeto
+            } else {
+                return done(null, false);
+            }
+        } catch (err) {
+            return done(err, false);
+        }
     });
-};
-
-export const authAdmin = (req, res, next) => {
-    if (!req.isAuthenticated() || req.user.rol !== 'admin') {
-        return res.status(403).json({ error: 'Acceso denegado. Solo los administradores pueden realizar esta acción.' });
-    }
-    next();
-};
+}

@@ -120,13 +120,13 @@ export default class carritoController{
                         stockPrevioCompra: producto.stock
                     });
                     producto.stock -= cantidad;
-                    await productosDAO.update(pid, producto);
+                    await productDao.update(pid, producto);
                     total += cantidad * producto.precio;
                 }
             }
 
             if (conStock.length === 0) {
-                return res.status(400).json({ error: `No hay ítems en condiciones de ser facturados` });
+                return res.status(400).json({ error: `No hay ítems para comprar` });
             }
 
             let nroComp = Date.now();
