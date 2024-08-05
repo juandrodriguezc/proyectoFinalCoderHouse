@@ -1,6 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import { UsuariosManagerDao as UsuariosDao } from "../dao/usuariosManagerDao.js";
-
+import mongoose from "mongoose";
 const usuariosDao = new UsuariosDao();
 
 export default class UsuariosController {
@@ -97,6 +97,8 @@ export default class UsuariosController {
       });
     }
   };
+
+
 
   static obtener = async(req,res)=>{
 

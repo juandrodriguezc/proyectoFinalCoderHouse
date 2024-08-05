@@ -21,6 +21,6 @@ const ticketsDAO=new TicketsDAO()
     router.post('/', carritoController.createCarrito)
 
     // Agregar un producto a un carrito
-    router.post('/:id/productos/:productId', carritoController.getProductInCart);
+    router.put('/:cid/producto/:pid', carritoController.getProductInCart);
 
     router.get("/comprar/:cid", passportCall('current'), carritoController.comprarCarrito);

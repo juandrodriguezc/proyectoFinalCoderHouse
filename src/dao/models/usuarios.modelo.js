@@ -15,11 +15,11 @@ const usuarioSchema = new mongoose.Schema(
       lastLogin: Date,
       carrito: {
           type: mongoose.Types.ObjectId,
-          ref: 'Carrito'},
+          ref: 'carritos'},
       rol: { 
           type: String, 
-          enum: ["Admin", "Usuario"], 
-          default: "Usuario" 
+          enum: ["admin", "usuario"], 
+          default: "usuario" 
       }
   },
   {
@@ -28,4 +28,4 @@ const usuarioSchema = new mongoose.Schema(
 );
 
 // Exporta el modelo Usuario
-export const usuariosModelo = mongoose.model("Usuario", usuarioSchema);
+export const usuariosModelo = mongoose.model("usuarios", usuarioSchema);

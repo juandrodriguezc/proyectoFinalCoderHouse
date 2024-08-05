@@ -21,7 +21,7 @@ router.get("/errorLogin", (req, res) => {
     return res.status(400).json({ error: `Error al logearse` });
 });
 
-router.post('/login', passportCall("login"), (req, res) => {
+router.post('/login', passportCall("login"), async (req, res) => {
     let token=jwt.sign(req.user, config.SECRET, {expiresIn:"1h"})
     res.cookie("coderCookie", token)
 
@@ -32,14 +32,16 @@ router.post('/login', passportCall("login"), (req, res) => {
     }
 
 
-    let usuario=req.user
+    let usuario=req.user.usuario
+    console.log(usuario)
     usuario={...usuario}
     delete usuario.password
     req.session.usuario=usuario
 
     if (usuario.email === 'adminCoder@coder.com') {
-        // Asignar el rol de administrador al usuario
         usuario.rol = 'admin';
+        // Actualizar el rol en la base de datos
+        await usuariosManager.update({ _id: usuario._id }, { rol: 'admin' });
     }
 
     // res.setHeader('Content-Type','application/json')

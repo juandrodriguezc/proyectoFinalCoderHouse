@@ -4,7 +4,7 @@ const carritoSchema = new mongoose.Schema(
     {
         productos: [
             {
-                producto: { type: mongoose.Schema.Types.ObjectId, ref: "Producto" }, // Debe coincidir con el nombre del modelo
+                producto: { type: mongoose.Types.ObjectId, ref: "productos" }, // Debe coincidir con el nombre del modelo
                 cantidad: Number
             }
         ]
@@ -14,4 +14,4 @@ const carritoSchema = new mongoose.Schema(
     }
 );
 
-export const modeloCarrito = mongoose.model("Carrito", carritoSchema);
+export const modeloCarrito = mongoose.model("carritos", carritoSchema);

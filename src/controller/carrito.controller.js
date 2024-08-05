@@ -55,40 +55,110 @@ export default class carritoController{
             return res.status(500).json({ error: 'Error al obtener el carrito' });
         }
     }
-
     static getProductInCart = async (req, res) => {
-        const { id: cartId, productId } = req.params;
-        console.log('ID del carrito recibido:', cartId);
-        console.log('ID del producto recibido:', productId);
+        let { cid, pid } = req.params;
     
-        if (!isValidObjectId(productId) || !isValidObjectId(cartId)) {
-            console.log('ID de producto o carrito no válido:', { productId, cartId });
-            return res.status(400).send('Error: ID de producto o carrito no válido');
+        if (!cid || !pid) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(400).json({ error: `Ingrese cid y pid` });
+        }
+    
+        if (!isValidObjectId(cid) || !isValidObjectId(pid)) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(400).json({ error: `Ingrese cid / pid con formato válido de MongoDB id` });
         }
     
         try {
-            const productToAdd = await productDao.getProductById({ _id: productId });
-            if (!productToAdd) {
-                return res.status(404).send('Error 404. Producto no encontrado');
+            let carrito = await cartDao.getCartById({ _id: cid });
+            if (!carrito) {
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(400).json({ error: `Carrito inexistente: ${cid}` });
             }
     
-            const updatedCart = await cartDao.addProductToCart(cartId, productToAdd);
-            if (!updatedCart) {
-                return res.status(404).send('Error 404. Carrito no encontrado');
+            let producto = await productDao.getProductById({ _id: pid });
+            if (!producto) {
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(400).json({ error: `Producto inexistente: ${pid}` });
             }
     
-            res.status(200).json(updatedCart);
+            if (producto.stock <= 0) {
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(400).json({ error: `No hay stock para el producto: ${pid}` });
+            }
+    
+            // Verificación de la existencia de producto en el carrito
+            let indiceProducto = carrito.productos.findIndex(p => p.producto && p.producto.toString() === pid);
+            
+            if (indiceProducto === -1) {
+                carrito.productos.push({
+                    producto: pid, cantidad: 1
+                });
+            } else {
+                carrito.productos[indiceProducto].cantidad++;
+            }
+    
+            try {
+                let resultado = await cartDao.update(cid, carrito);
+                if (resultado.modifiedCount > 0) {
+                    res.setHeader('Content-Type', 'application/json');
+                    return res.status(200).json({ payload: "Carrito actualizado...!!!" });
+                } else {
+                    res.setHeader('Content-Type', 'application/json');
+                    return res.status(500).json({
+                        error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(500).json({
+                    error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+                    detalle: `${error.message}`
+                });
+            }
         } catch (error) {
-            console.error('Error al agregar un producto al carrito:', error);
-            res.status(500).send('Error al agregar un producto al carrito');
+            console.log(error);
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(500).json({
+                error: `Error inesperado en el servidor - Intente más tarde, o contacte a su administrador`,
+                detalle: `${error.message}`
+            });
         }
     }
+    
 
+
+    //     const { id: cartId, productId } = req.params;
+    //     console.log('ID del carrito recibido:', cartId);
+    //     console.log('ID del producto recibido:', productId);
+    
+    //     if (!isValidObjectId(productId) || !isValidObjectId(cartId)) {
+    //         console.log('ID de producto o carrito no válido:', { productId, cartId });
+    //         return res.status(400).send('Error: ID de producto o carrito no válido');
+    //     }
+    
+    //     try {
+    //         const productToAdd = await productDao.getProductById({ _id: productId });
+    //         if (!productToAdd) {
+    //             return res.status(404).send('Error 404. Producto no encontrado');
+    //         }
+    
+    //         const updatedCart = await cartDao.addProductToCart(cartId, productToAdd);
+    //         if (!updatedCart) {
+    //             return res.status(404).send('Error 404. Carrito no encontrado');
+    //         }
+    
+    //         res.status(200).json(updatedCart);
+    //     } catch (error) {
+    //         console.error('Error al agregar un producto al carrito:', error);
+    //         res.status(500).send('Error al agregar un producto al carrito');
+    //     }
+    // }
     static async comprarCarrito(req, res) {
         const { cid } = req.params;
 
         if (!isValidObjectId(cid)) {
-            return res.status(400).json({ error: `ID de carrito inválido` });
+            return res.status(400).json({ error: 'ID de carrito inválido' });
         }
 
         try {
@@ -100,7 +170,7 @@ export default class carritoController{
 
             // Verificar si el carrito está vacío
             if (carrito.productos.length === 0) {
-                return res.status(400).json({ error: `Carrito vacío` });
+                return res.status(400).json({ error: 'Carrito vacío' });
             }
 
             const conStock = [];
@@ -122,10 +192,19 @@ export default class carritoController{
                 if (!producto) {
                     console.log(`Producto con ID ${pid} no encontrado.`);
                     sinStock.push({ producto: pid, cantidad });
-                } else if (producto.stock < cantidad) {
-                    console.log(`Producto ${pid} sin stock suficiente. Cantidad disponible: ${producto.stock}`);
+                } else if (isNaN(producto.stock) || isNaN(cantidad) || producto.stock < cantidad) {
+                    console.log(`Producto ${pid} sin stock suficiente o con valores inválidos. Cantidad disponible: ${producto.stock}`);
                     sinStock.push({ producto: pid, cantidad });
                 } else {
+                    const nuevoStock = producto.stock - cantidad;
+
+                    // Validar que el nuevo stock es un número válido
+                    if (isNaN(nuevoStock)) {
+                        console.error(`Stock inválido calculado para el producto ${pid}: ${nuevoStock}`);
+                        sinStock.push({ producto: pid, cantidad });
+                        continue;
+                    }
+
                     conStock.push({
                         _id: pid,
                         descripcion: producto.descripcion,
@@ -134,14 +213,14 @@ export default class carritoController{
                         subtotal: producto.precio * cantidad,
                         stockPrevioCompra: producto.stock
                     });
-                    producto.stock -= cantidad;
+                    producto.stock = nuevoStock;
                     await productDao.update(pid, producto);
                     total += cantidad * producto.precio;
                 }
             }
 
             if (conStock.length === 0) {
-                return res.status(400).json({ error: `No hay ítems para comprar` });
+                return res.status(400).json({ error: 'No hay ítems para comprar' });
             }
 
             const nroComp = Date.now();
@@ -166,16 +245,16 @@ export default class carritoController{
             Ticket: <b>${nroComp}</b> - importe a pagar: <b><i>$ ${total}</b></i> <br>
             Contacte a pagos para finalizar la operación: pagos@cuchuflito.com
             <br><br>
-            ${sinStock.length > 0 ? `Algunos items del carrito no fueron procesados. Verifique: ${JSON.stringify(sinStock, null, 5)}` : ""}`;
+            ${sinStock.length > 0 ? `Algunos items del carrito no fueron procesados. Verifique: ${JSON.stringify(sinStock, null, 5)}` : ''}`;
 
             // Enviar email
-            await sendEmail(email, "Compra realizada con éxito...!!!", mensaje);
+            await sendEmail(email, 'Compra realizada con éxito...!!!', mensaje);
 
             return res.status(200).json({ nuevoTicket });
         } catch (error) {
             console.error('Error al comprar el carrito:', error);
             return res.status(500).json({
-                error: `Error inesperado en el servidor`,
+                error: 'Error inesperado en el servidor',
                 detalle: `${error.message}`
             });
         }

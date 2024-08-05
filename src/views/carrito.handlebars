@@ -4,8 +4,7 @@
 <ul>
     {{#each carrito.productos}}
         <li>
-            {{log this}} <!-- Imprime el objeto de cada producto en la vista para depurar -->
-            {{this.descripcion}} - cantidad: {{this.cantidad}} - precio: {{this.precio}}
+            {{producto.nombre}} - cantidad: {{this.cantidad}} - precio: {{producto.precio}}
         </li>
     {{/each}}
 </ul>

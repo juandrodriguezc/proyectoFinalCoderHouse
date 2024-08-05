@@ -41,7 +41,7 @@ router.get('/',(req,res)=>{
     
             res.setHeader('Content-Type', 'text/html');
             res.status(200).render("productos", {
-                nombreUsuario,
+                usuario: req.user.usuario,
                 productos,
                 totalPages,
                 prevPage,
@@ -56,24 +56,11 @@ router.get('/',(req,res)=>{
     });
 
     router.get('/carts', passportCall('current'), async (req, res) => {
-        try {
-            const carritoId = req.user.usuario.carrito; // Accede correctamente a la propiedad carrito
-            console.log('ID del carrito:', carritoId);
-    
-            if (!carritoId) {
-                return res.status(400).send('ID de carrito no disponible');
-            }
-    
-            const carrito = await cartDao.getOneByPopulate({ _id: carritoId });
-            console.log('Carritooo:', carrito);
-    
-            res.setHeader('Content-Type', 'text/html');
-            res.status(200).render('carrito', { usuario: req.user.usuario, carrito });
-        } catch (error) {
-            console.error('Error al obtener el carrito:', error);
-            res.status(500).send('Error al obtener el carrito');
-        }
-    });
+        let carrito=await cartDao.getOneByPopulate({_id:req.user.usuario.carrito})
+
+    res.setHeader('Content-Type','text/html')
+    res.status(200).render("carrito", {usuario: req.user.usuario, carrito})
+})
 
 router.get('/registro',(req,res)=>{
 

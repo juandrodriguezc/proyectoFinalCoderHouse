@@ -36,45 +36,33 @@ export class CartManager {
     }
 }
 
-    async getOneByPopulate(query) {
-        try {
-            return await modeloCarrito
-                .findOne(query)
-                .populate({
-                    path: 'productos.producto',
-                    model: 'Producto'
-                })
-                .lean();
-        } catch (error) {
-            console.error('Error en getOneByPopulate:', error);
-            return null;
-        }
-    }
+async getOneByPopulate(filtro={}){
+    return await modeloCarrito.findOne(filtro).populate("productos.producto").lean()
+}
+
 
     // Agregar un producto al carrito
     async addProductToCart(cartId, productToAdd, cantidad) {
         try {
             const objectId = new mongoose.Types.ObjectId(cartId); 
             const cart = await modeloCarrito.findOne({ _id: objectId });
-    
-            if (cart && productToAdd) {
-                const existingProductIndex = cart.productos.findIndex(p => p.producto.equals(productToAdd._id));
-    
-                if (existingProductIndex > -1) {
-            
-                    cart.productos[existingProductIndex].cantidad += cantidad;
-                } else {
-        
-                    cart.productos.push({ producto: productToAdd._id, cantidad });
-                }
-    
-                await cart.save();
-                console.log("Producto agregado", productToAdd);
-                return cart; 
-            } else {
-                console.log(`Error: Carrito con ID ${cartId} o producto no encontrado.`);
-                return null;
+            if (!cart) {
+                throw new Error(`Carrito con ID ${cartId} no encontrado`);
             }
+            if (!productToAdd) {
+                throw new Error('Producto a agregar no encontrado');
+            }
+    
+            const existingProductIndex = cart.productos.findIndex(p => p.producto.equals(productToAdd._id));
+            if (existingProductIndex > -1) {
+                cart.productos[existingProductIndex].cantidad += cantidad;
+            } else {
+                cart.productos.push({ producto: productToAdd._id, cantidad });
+            }
+    
+            await cart.save();
+            console.log("Producto agregado", productToAdd);
+            return cart; 
         } catch (error) {
             console.error('Error al agregar un producto al carrito:', error);
             throw error;

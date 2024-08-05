@@ -1,22 +1,23 @@
-<h1>Pagina de Productos</h1>
+<h2>Productos:</h2>
 <hr>
-
-<h2>Bienvenido, Acá está nuestro listado de Productos:</h2>
-
+<h3 data-carrito="{{usuario.carrito}}" id="h3Usuario">Usuario conectado: {{usuario.nombre}}</h3>
+{{!-- <input type="text" id="carrito" value="{{usuario.carrito}}" hidden> --}}
 <ul>
     {{#each productos}}
-    <li>{{nombre}} - {{precio}}$ <button class="agregar-carrito" data-id="{{_id}}">Agregar al carrito</button></li>
+        <li>
+            {{nombre}} - precio: {{precio}} <button onclick="agregar('{{_id}}')">Agregar a carrito</button>
+        </li>
     {{/each}}
 </ul>
 
+{{!-- <a href="/api/carritos/{{usuario.carrito}}">VerCarrito</a> --}}
+<a href="/carts">VerCarrito</a>
 <li>
     <a href="/">Pagina de Inicio</a>
 </li>
 <li>
     <a href="/api/sessions/logout">Cerrar sesion</a>
 </li>
-
-<a href="/productos?pagina=1">Pag.1</a>
 
 {{#if hasPrevPage}}
     <a href="/productos?pagina={{prevPage}}">Pag.Ant.</a>
@@ -41,31 +42,7 @@
 
 </script>
 
-{{!-- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const botonesAgregarCarrito = document.querySelectorAll('.agregar-carrito');
-        botonesAgregarCarrito.forEach(boton => {
-            boton.addEventListener('click', async () => {
-                const productoId = boton.getAttribute('data-id');
-                try {
-                    const respuesta = await fetch(`/api/carts/${productoId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    if (respuesta.ok) {
-                        alert('Producto agregado al carrito correctamente');
-                    } else {
-                        throw new Error('Error al agregar el producto al carrito');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Ocurrió un error al agregar el producto al carrito');
-                }
-            });
-        });
-    });
-</script> --}}
+
+ <script src="/products.js"></script>
 
 <script src="socket.io/socket.io.js"></script>

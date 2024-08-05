@@ -6,11 +6,13 @@ import { faker } from '@faker-js/faker';
 import winston from 'winston';
 import { config } from './config/config.js';
 import nodemailer from 'nodemailer';
-
+import mongoose from 'mongoose';
+import { UsuariosManagerDao as UsuariosDao } from './dao/usuariosManagerDao.js';
 // dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const usuariosDao=new UsuariosDao()
 export default __dirname;
 // rutas
 export const rutaProductos = join(__dirname, "data", "productos.json");
