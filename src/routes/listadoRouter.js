@@ -4,12 +4,11 @@ import { passportCall, rutaProductos } from '../utils.js';
 import { modeloProductos } from '../dao/models/productos.modelo.js';
 import { modeloCarrito } from '../dao/models/carrito.modelo.js';
 import { auth } from '../middlewares/auth.js';
-
-
+import { CartManager as CartDao } from '../dao/cartManagerDao.js';
 
 export const router=Router()
 
-let productsManager=new ProductManager(rutaProductos)
+const cartDao =new CartDao()
 
 router.get('/',(req,res)=>{
     let {nombre}=req.query
@@ -58,37 +57,23 @@ router.get('/',(req,res)=>{
 
     router.get('/carts', passportCall('current'), async (req, res) => {
         try {
-            console.log('Usuario:', req.user);
-            const carrito = await modeloCarrito
-                .findOne({ usuario: req.user._id })
-                .populate('productos.producto') 
-                .lean();
+            const carritoId = req.user.usuario.carrito; // Accede correctamente a la propiedad carrito
+            console.log('ID del carrito:', carritoId);
     
-            if (!carrito) {
-                return res.status(404).send('Carrito no encontrado');
+            if (!carritoId) {
+                return res.status(400).send('ID de carrito no disponible');
             }
     
-            const carritoData = {
-                _id: carrito._id,
-                productos: carrito.productos.map(p => ({
-                    descripcion: p.producto.descripcion,
-                    cantidad: p.cantidad,
-                    precio: p.producto.precio
-                }))
-            };
+            const carrito = await cartDao.getOneByPopulate({ _id: carritoId });
+            console.log('Carritooo:', carrito);
     
-            const usuarioData = {
-                nombre: req.user.nombre,
-                _id: req.user._id
-            };
-    
-            res.status(200).render('carrito', { carrito: carritoData, usuario: usuarioData });
+            res.setHeader('Content-Type', 'text/html');
+            res.status(200).render('carrito', { usuario: req.user.usuario, carrito });
         } catch (error) {
-            console.error('Error al obtener los carritos:', error);
-            res.status(500).send('Error al obtener los carritos');
+            console.error('Error al obtener el carrito:', error);
+            res.status(500).send('Error al obtener el carrito');
         }
     });
-    
 
 router.get('/registro',(req,res)=>{
 

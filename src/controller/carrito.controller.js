@@ -1,6 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import { CartManager as CartDao } from "../dao/cartManagerDao.js";
 import { ProductManager as ProductDao } from "../dao/productManagerDao.js";
+import mongoose from "mongoose";
 
 const productDao=new ProductDao()
 const cartDao=new CartDao()
@@ -83,32 +84,46 @@ export default class carritoController{
         }
     }
 
-    static comprarCarrito = async (req, res) => {
-        let { cid } = req.params;
+    static async comprarCarrito(req, res) {
+        const { cid } = req.params;
+
         if (!isValidObjectId(cid)) {
             return res.status(400).json({ error: `ID de carrito inválido` });
         }
 
         try {
-            let carrito = await cartDao.getCartById({ _id: cid });
+            // Obtener carrito
+            const carrito = await cartDao.getCartById({ _id: cid });
             if (!carrito) {
                 return res.status(400).json({ error: `Carrito inexistente. Id: ${cid}` });
             }
 
+            // Verificar si el carrito está vacío
             if (carrito.productos.length === 0) {
                 return res.status(400).json({ error: `Carrito vacío` });
             }
 
-            let conStock = [];
-            let sinStock = [];
+            const conStock = [];
+            const sinStock = [];
             let total = 0;
 
-            for (let i = 0; i < carrito.productos.length; i++) {
-                let pid = carrito.productos[i].producto;
-                let cantidad = carrito.productos[i].cantidad;
-                let producto = await productDao.getProductById({ _id: pid });
+            // Procesar productos
+            for (const item of carrito.productos) {
+                const pid = item.producto; // ID del producto
+                const cantidad = item.cantidad; // Cantidad del producto
 
-                if (!producto || producto.stock - cantidad < 0) {
+                if (!isValidObjectId(pid)) {
+                    console.log(`ID de producto inválido: ${pid}`);
+                    sinStock.push({ producto: pid, cantidad });
+                    continue;
+                }
+
+                const producto = await productDao.getProductById({ _id: pid });
+                if (!producto) {
+                    console.log(`Producto con ID ${pid} no encontrado.`);
+                    sinStock.push({ producto: pid, cantidad });
+                } else if (producto.stock < cantidad) {
+                    console.log(`Producto ${pid} sin stock suficiente. Cantidad disponible: ${producto.stock}`);
                     sinStock.push({ producto: pid, cantidad });
                 } else {
                     conStock.push({
@@ -129,32 +144,40 @@ export default class carritoController{
                 return res.status(400).json({ error: `No hay ítems para comprar` });
             }
 
-            let nroComp = Date.now();
-            let fecha = new Date();
-            let email = req.user.email;
+            const nroComp = Date.now();
+            const fecha = new Date();
+            const email = req.user.usuario.email;
 
-            let nuevoTicket = await ticketsDAO.create({
-                nroComp, fecha, email,
-                items: conStock, total
+            // Crear ticket
+            const nuevoTicket = await ticketsDAO.create({
+                nroComp,
+                fecha,
+                email,
+                items: conStock,
+                total
             });
 
+            // Actualizar carrito
             carrito.productos = sinStock;
-            await carritosDAO.update(cid, carrito);
+            await cartDao.update(cid, carrito);
 
-            let mensaje = `Su compra ha sido procesada...!!! <br>
+            // Mensaje para el usuario
+            const mensaje = `Su compra ha sido procesada...!!! <br>
             Ticket: <b>${nroComp}</b> - importe a pagar: <b><i>$ ${total}</b></i> <br>
             Contacte a pagos para finalizar la operación: pagos@cuchuflito.com
             <br><br>
             ${sinStock.length > 0 ? `Algunos items del carrito no fueron procesados. Verifique: ${JSON.stringify(sinStock, null, 5)}` : ""}`;
 
+            // Enviar email
             await sendEmail(email, "Compra realizada con éxito...!!!", mensaje);
 
             return res.status(200).json({ nuevoTicket });
         } catch (error) {
+            console.error('Error al comprar el carrito:', error);
             return res.status(500).json({
                 error: `Error inesperado en el servidor`,
                 detalle: `${error.message}`
             });
         }
-    };
     }
+}

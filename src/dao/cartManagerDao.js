@@ -36,26 +36,51 @@ export class CartManager {
     }
 }
 
-    // Agregar un producto al carrito
-    async addProductToCart(cartId, productToAdd) {
+    async getOneByPopulate(query) {
         try {
-            const objectId = new mongoose.Types.ObjectId(cartId); // Usa mongoose.Types.ObjectId
+            return await modeloCarrito
+                .findOne(query)
+                .populate({
+                    path: 'productos.producto',
+                    model: 'Producto'
+                })
+                .lean();
+        } catch (error) {
+            console.error('Error en getOneByPopulate:', error);
+            return null;
+        }
+    }
+
+    // Agregar un producto al carrito
+    async addProductToCart(cartId, productToAdd, cantidad) {
+        try {
+            const objectId = new mongoose.Types.ObjectId(cartId); 
             const cart = await modeloCarrito.findOne({ _id: objectId });
     
             if (cart && productToAdd) {
-                cart.productos.push(productToAdd);
+                const existingProductIndex = cart.productos.findIndex(p => p.producto.equals(productToAdd._id));
+    
+                if (existingProductIndex > -1) {
+            
+                    cart.productos[existingProductIndex].cantidad += cantidad;
+                } else {
+        
+                    cart.productos.push({ producto: productToAdd._id, cantidad });
+                }
+    
                 await cart.save();
-                console.log(`Producto "${productToAdd.nombre}" agregado al carrito ${cartId}.`);
-                return cart; // Devuelve el carrito actualizado
+                console.log("Producto agregado", productToAdd);
+                return cart; 
             } else {
                 console.log(`Error: Carrito con ID ${cartId} o producto no encontrado.`);
-                return null; // Devuelve null si el carrito no se encuentra
+                return null;
             }
         } catch (error) {
             console.error('Error al agregar un producto al carrito:', error);
             throw error;
         }
     }
+    
 
 async update(id, carrito){
         return await modeloCarrito.updateOne({_id:id}, carrito)

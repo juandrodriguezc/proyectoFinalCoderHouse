@@ -1,22 +1,17 @@
 import mongoose from "mongoose";
 
-export const modeloCarrito=mongoose.model(
-    "carritos",
-    new mongoose.Schema(
-        {
-            productos:{
-                type: [
-                    {
-                        producto: {
-                            type: mongoose.Types.ObjectId, ref: "productos"
-                        }, 
-                        cantidad: Number
-                    }
-                ]
+const carritoSchema = new mongoose.Schema(
+    {
+        productos: [
+            {
+                producto: { type: mongoose.Schema.Types.ObjectId, ref: "Producto" }, // Debe coincidir con el nombre del modelo
+                cantidad: Number
             }
-        },
-        {
-            timestamps:true
-        }
-    )
-)
+        ]
+    },
+    {
+        timestamps: true
+    }
+);
+
+export const modeloCarrito = mongoose.model("Carrito", carritoSchema);
