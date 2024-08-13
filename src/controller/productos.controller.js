@@ -16,7 +16,7 @@ export default class productosController{
     };
     
     static crearProducto = async (req, res) => {
-        const { nombre, precio, code } = req.body;
+        const { nombre, descripcion, code, precio, stock } = req.body;
 
         if (!nombre || !precio || !code) {
             res.setHeader('Content-Type', 'application/json');
@@ -24,7 +24,7 @@ export default class productosController{
         }
 
         try {
-            let nuevoProducto = await productDao.addProduct(nombre, precio, code);
+            let nuevoProducto = await productDao.addProduct(nombre, descripcion, code, precio, stock);
             if (!nuevoProducto) {
                 res.setHeader('Content-Type', 'application/json');
                 return res.status(409).json({ error: 'Producto con ese código ya existe' });

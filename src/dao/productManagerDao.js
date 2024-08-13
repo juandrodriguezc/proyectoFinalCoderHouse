@@ -24,9 +24,9 @@ export class ProductManager {
   }
 
   // Función para crear un nuevo producto
-  async addProduct(nombre, precio, code) {
+  async addProduct(nombre, descripcion, code, precio,stock) {
     try {
-      return await modeloProductos.create({ nombre, precio, code });
+      return await modeloProductos.create({ nombre, descripcion, code, precio, stock });
     } catch (error) {
       console.error('Error al crear el producto:', error);
       throw new Error('Error al crear el producto');

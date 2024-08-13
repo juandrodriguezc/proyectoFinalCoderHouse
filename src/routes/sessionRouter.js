@@ -46,9 +46,7 @@ router.post('/login', passportCall("login"), async (req, res) => {
 
     // res.setHeader('Content-Type','application/json')
     // res.redirect('/productos')
-    res.status(200).json({
-        message:"Login correcto", usuario
-    })
+    return res.redirect('/productos')
 })
 
 // Recuperación de Contraseña

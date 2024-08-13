@@ -1,11 +1,13 @@
 import { isValidObjectId } from "mongoose";
 import { CartManager as CartDao } from "../dao/cartManagerDao.js";
 import { ProductManager as ProductDao } from "../dao/productManagerDao.js";
+import { TicketsDAO as TicketsDAO } from "../dao/ticketDao.js";
+import { sendEmail } from "../utils.js";
 import mongoose from "mongoose";
 
 const productDao=new ProductDao()
 const cartDao=new CartDao()
-
+const ticketsDAO=new TicketsDAO()
 export default class carritoController{
 
     static getCarrito=async (req, res) => {
@@ -241,10 +243,9 @@ export default class carritoController{
             await cartDao.update(cid, carrito);
 
             // Mensaje para el usuario
-            const mensaje = `Su compra ha sido procesada...!!! <br>
-            Ticket: <b>${nroComp}</b> - importe a pagar: <b><i>$ ${total}</b></i> <br>
-            Contacte a pagos para finalizar la operación: pagos@cuchuflito.com
-            <br><br>
+            const mensaje = `Su compra ha sido procesada...!!!
+            Ticket: ${nroComp} - importe a pagar:$ ${total} 
+            Contacte a: rodriguezcolmenaresjuand@gmail.com, para mas informacion
             ${sinStock.length > 0 ? `Algunos items del carrito no fueron procesados. Verifique: ${JSON.stringify(sinStock, null, 5)}` : ''}`;
 
             // Enviar email
